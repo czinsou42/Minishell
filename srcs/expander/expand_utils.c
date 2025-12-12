@@ -1,0 +1,109 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/28 11:54:51 by amwahab           #+#    #+#             */
+/*   Updated: 2025/10/28 17:04:13 by amwahab          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+int	get_var_len(char *str, int *i, char **envp)
+{
+	int		j;
+	char	*tmp;
+	char	*value;
+
+	j = *i + 1;
+	while (ft_isalnum(str[j]) || str[j] == '_')
+		j++;
+	tmp = ft_substr(str, *i + 1, j - *i - 1);
+	if (!tmp)
+		return (-1);
+	value = ft_getenv(tmp, envp);
+	free(tmp);
+	*i = j - 1;
+	if (value)
+		return (ft_strlen(value));
+	return (0);
+}
+
+int	expanded_len(char *str, char **envp)
+{
+	int	i;
+	int	total_len;
+	int	len;
+
+	i = -1;
+	total_len = 0;
+	while (str[++i])
+	{
+		if (str[i] == '$' && is_valid_var_char(str[i + 1]))
+		{
+			len = get_var_len(str, &i, envp);
+			if (len == -1)
+				return (0);
+			total_len += len;
+		}
+		else
+			total_len++;
+	}
+	return (total_len);
+}
+
+int	copy_var_value(char *str, int *i, char *result, int k, char **envp)
+{
+	int		j;
+	char	*tmp;
+	char	*value;
+	int		len;
+
+	j = *i + 1;
+	while (ft_isalnum(str[j]) || str[j] == '_')
+		j++;
+	tmp = ft_substr(str, *i + 1, j - *i - 1);
+	if (!tmp)
+		return (-1);
+	value = ft_getenv(tmp, envp);
+	free(tmp);
+	*i = j - 1;
+	if (!value)
+		return (k);
+	len = 0;
+	while (value[len])
+		result[k++] = value[len++];
+	return (k);
+}
+
+char	*copy_expanded_str(char *str, char *result, char **envp)
+{
+	int	i;
+	int	k;
+
+	i = -1;
+	k = 0;
+	while (str[++i])
+	{
+		if (str[i] == '$' && is_valid_var_char(str[i + 1]))
+		{
+			k = copy_var_value(str, &i, result, k, envp);
+			if (k == -1)
+				return (NULL);
+		}
+		else
+			result[k++] = str[i];
+	}
+	result[k] = '\0';
+	return (result);
+}
+
+int	is_valid_var_char(char c)
+{
+	if (ft_isalpha(c) || c == '_') 
+		return (1);
+	return (0);
+}
