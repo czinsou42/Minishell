@@ -235,4 +235,4 @@ La gestion des signaux (SIGINT pour Ctrl+C notamment) nécessite d'utiliser `sig
 
 ## Auteurs
 
-Projet réalisé par **amwahab** dans le cadre du cursus 42.
+Projet réalisé par **amwahab et czinsou** dans le cadre du cursus 42.
