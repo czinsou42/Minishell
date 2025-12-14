@@ -6,7 +6,7 @@
 #    By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2025/12/08 16:36:35 by czinsou          ###   ########.fr        #
+#    Updated: 2025/12/14 12:10:38 by czinsou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,11 +48,15 @@ EXEC_SRCS = srcs/exec/exec_and.c \
 BUILTINS_SRCS = srcs/builtins/builtins_cd.c \
 				srcs/builtins/builtins_exec.c \
 				srcs/builtins/builtins_utils.c \
-				srcs/builtins/builtins.c \
+				srcs/builtins/builtins_export.c \
+				srcs/builtins/builtins_unset.c \
+				srcs/builtins/builtins_exit.c \
+				srcs/builtins/builtins_export_handle.c \
+				srcs/builtins/builtins_simple.c \
 
 HEREDOC_SRCS = srcs/heredoc/heredoc.c
 
-SRCS = srcs/main.c $(LEXER_SRCS) $(AST_SRCS) $(PARSER_SRCS) $(EXPAND_SRCS) $(EXEC_SRCS) $(HEREDOC_SRCS) $(TEST_BUILTINS)
+SRCS = srcs/main.c $(LEXER_SRCS) $(AST_SRCS) $(PARSER_SRCS) $(EXPAND_SRCS) $(EXEC_SRCS) $(HEREDOC_SRCS) $(BUILTINS_SRCS)
 TEST_LEXER_SRCS = srcs/lexer/lexer_test.c $(LEXER_SRCS)
 TEST_AST_SRCS = srcs/ast/ast_test.c $(AST_SRCS)
 TEST_PARSER_SRCS = srcs/parser/parser_test.c $(LEXER_SRCS) $(AST_SRCS) $(PARSER_SRCS)

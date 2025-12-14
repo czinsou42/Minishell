@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2025/12/08 16:34:50 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/14 12:08:41 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <errno.h>
 # include <string.h>
 # include <linux/limits.h>
+# include <signal.h>
 
 /*=============================== CODE ERREUR =====================================*/
 
@@ -130,7 +131,8 @@ typedef struct s_pipeline{
 typedef struct s_cleanup {
 	char	*line;		// Ligne de readline à libérer
 	t_token	*tokens;	// Liste de tokens à libérer
-	t_node	*ast;		// Arbre syntaxique à libérer
+	t_node	*ast;
+	int		last_status;	// Arbre syntaxique à libérer
 }	t_cleanup;
 /*==================================================================================*/
 /*============================= FONCTIONS ==========================================*/
@@ -253,13 +255,29 @@ int		get_exit_code(int status);
 
 /*========================================= BUILTINS ===============================================*/
 
-int	builtin_cd(t_command *cmd, char **envp);
-int	exec_command(t_command *cmd, char **envp, t_cleanup *cleanup);
+int		builtin_cd(t_command *cmd, char **envp);
+int		exec_command(t_command *cmd, char **envp, t_cleanup *cleanup);
 char	*ft_getenv(char *name, char **envp);
 char	*ft_strjoin3(char *a, char *b, char *c);
-int	is_parent_builtin(const char *cmd);
-int	execute_builtin_simple(t_command *cmd);
-//int	execute_builtin_parent(t_command *cmd, char ***envp, t_cleanup *cleanup);
-
+int		is_parent_builtin(const char *cmd);
+int		execute_builtin_simple(t_command *cmd, char ***envp);
+int		builtin_echo(t_command *cmd);
+int		builtin_pwd(t_command *cmd);
+int		builtin_env(t_command *cmd, char **envp);
+int		builtin_export(t_command *cmd, char ***env, char ***export_vars);
+int		builtin_unset(t_command *cmd, char ***env, char ***export_vars);
+int		builtin_exit(t_command *cmd, t_cleanup *cleanup);
+int		is_numeric_exit(const char *str);
+int		get_exit_value(const char *str);
+void	cleanup_and_exit(t_cleanup *cleanup, int status);
+int		is_valid_env(const char *name);
+char	*ft_strndup(const char *s, int maxlen);
+int		handle_export_arg(char *arg, char ***env, char ***export_vars);
+void	print_export_vars(char **export_vars);
+int		execute_builtin_parent(t_command *cmd, char ***envp, t_cleanup *cleanup);
+char	*ft_strndup(const char *s, int maxlen);
+int		is_valid_env(const char *name);
+void	sort_env(char **env);
+int		update_env(char ***envp, char *name, char *value);
 
 #endif

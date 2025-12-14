@@ -6,29 +6,11 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 17:23:33 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/12 16:41:17 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/14 12:08:09 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	is_valid_env(const char *name)
-{
-	int	i;
-
-	if (!name)
-		return (0);
-	if (!ft_isalpha(name[0]) && name[0] != '_')
-		return (0);
-	i = 1;
-	while (name[i])
-	{
-		if (!ft_isalnum(name[i]) && name[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
-}
 
 static int	create_env(char ***envp, char *name, char *value, int i)
 {
@@ -56,7 +38,7 @@ static int	create_env(char ***envp, char *name, char *value, int i)
 	return (0);
 }
 
-static int	update_env(char ***envp, char *name, char *value)
+int	update_env(char ***envp, char *name, char *value)
 {
 	int		i;
 	int		len;
@@ -80,40 +62,34 @@ static int	update_env(char ***envp, char *name, char *value)
 	return (create_env(envp, name, value, i));
 }
 
-int	builtin_export(t_command *cmd, char ***envp)
+void	print_export_vars(char **export_vars)
 {
 	int		i;
-	char	*arg;
-	char	*eq;
-	char	*name;
-	char	*value;
 
-	if (!cmd || !cmd->argv || !envp)
+	sort_env(export_vars);
+	i = 0;
+	while (export_vars[i])
+	{
+		printf("declare -x %s\n", export_vars[i]);
+		i++;
+	}
+}
+
+int	builtin_export(t_command *cmd, char ***env, char ***export_vars)
+{
+	int	i;
+
+	if (!cmd || !cmd->argv)
 		return (1);
+	if (!cmd->argv[1])
+	{
+		print_export_vars(*export_vars);
+		return (0);
+	}
 	i = 1;
 	while (cmd->argv[i])
 	{
-		arg = cmd->argv[i];
-		eq = ft_strchr(arg, '=');
-		if (!is_valid_env_name(arg))
-		{
-			printf("minishell: export: `%s': not a valid identifier\n", arg);
-			i++;
-			continue ;
-		}
-		if (eq)
-		{
-			name = ft_strndup(arg, eq - arg);
-			value = eq + 1;
-			if (update_env(envp, name, value))
-				return (free(name), 1);
-			free(name);
-		}
-		else
-		{
-			if (update_env(envp, arg, ""))
-				return (1);
-		}
+		handle_export_arg(cmd->argv[i], env, export_vars);
 		i++;
 	}
 	return (0);
