@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 17:23:33 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/14 12:08:09 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/14 12:54:53 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	builtin_export(t_command *cmd, char ***env, char ***export_vars)
 {
 	int	i;
 
-	if (!cmd || !cmd->argv)
+	if (!cmd || !cmd->argv || !env || !export_vars)
 		return (1);
 	if (!cmd->argv[1])
 	{

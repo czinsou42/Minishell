@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 05:09:01 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/14 12:11:15 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/14 13:03:55 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static char	*create_export_value(char *name, char *value)
 	return (new_var);
 }
 
-
 static int	update_export_list(char ***export_vars, char *name, char *value)
 {
 	int		i;
@@ -83,21 +82,22 @@ int	handle_export_arg(char *arg, char ***env, char ***export_vars)
 	char	*value;
 
 	eq = ft_strchr(arg, '=');
-	if (!is_valid_env(arg))
-	{
-		printf("minishell: export: `%s': not a valid identifier\n", arg);
-		return (0);
-	}
 	if (eq)
 	{
 		name = ft_strndup(arg, eq - arg);
 		value = eq + 1;
+		if (!is_valid_env(name))
+			return (printf("minishell: export: `%s': not a valid identifier\n",
+					name), free(name), 0);
 		update_env(env, name, value);
 		update_export_list(export_vars, name, value);
 		free(name);
 	}
 	else
 	{
+		if (!is_valid_env(arg))
+			return (printf("minishell: export: `%s': not a valid identifier\n",
+					arg), 0);
 		update_export_list(export_vars, arg, NULL);
 	}
 	return (0);
