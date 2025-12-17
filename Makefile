@@ -6,7 +6,7 @@
 #    By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2025/12/14 12:10:38 by czinsou          ###   ########.fr        #
+#    Updated: 2025/12/17 15:22:21 by czinsou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,13 +46,13 @@ EXEC_SRCS = srcs/exec/exec_and.c \
 			srcs/exec/exec.c \
 
 BUILTINS_SRCS = srcs/builtins/builtins_cd.c \
-				srcs/builtins/builtins_exec.c \
 				srcs/builtins/builtins_utils.c \
 				srcs/builtins/builtins_export.c \
 				srcs/builtins/builtins_unset.c \
 				srcs/builtins/builtins_exit.c \
 				srcs/builtins/builtins_export_handle.c \
 				srcs/builtins/builtins_simple.c \
+				srcs/builtins/builtins.c \
 
 HEREDOC_SRCS = srcs/heredoc/heredoc.c
 

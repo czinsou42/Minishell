@@ -6,29 +6,11 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 14:34:05 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/14 06:30:15 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/17 15:17:02 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char	*ft_getenv(char *name, char **envp)
-{
-	int	i;
-	int	len;
-
-	if (!name || !envp)
-		return (NULL);
-	len = ft_strlen(name);
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
-			return (envp[i] + len + 1);
-		i++;
-	}
-	return (NULL);
-}
 
 char	*ft_strjoin3(char *a, char *b, char *c)
 {

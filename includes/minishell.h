@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2025/12/14 12:08:41 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/17 15:51:13 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,7 +255,7 @@ int		get_exit_code(int status);
 
 /*========================================= BUILTINS ===============================================*/
 
-int		builtin_cd(t_command *cmd, char **envp);
+int		builtin_cd(t_command *cmd, char ***envp);
 int		exec_command(t_command *cmd, char **envp, t_cleanup *cleanup);
 char	*ft_getenv(char *name, char **envp);
 char	*ft_strjoin3(char *a, char *b, char *c);
@@ -279,5 +279,6 @@ char	*ft_strndup(const char *s, int maxlen);
 int		is_valid_env(const char *name);
 void	sort_env(char **env);
 int		update_env(char ***envp, char *name, char *value);
+int		update_env_forcd(char ***envp, char *name, char *value);
 
 #endif

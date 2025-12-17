@@ -6,11 +6,33 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 14:36:50 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/14 12:41:11 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/17 13:12:43 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int is_parent_builtin(const char *cmd)
+{
+	(void)cmd;
+	return (0);
+}
+
+int execute_builtin_parent(t_command *cmd, char ***envp, t_cleanup *cleanup)
+{
+	(void)cmd;
+	(void)envp;
+	(void)cleanup;
+	return (0);
+}
+
+int execute_builtin_simple(t_command *cmd, char ***envp)
+{
+	(void)cmd;
+	(void)envp;
+	return (0);
+}
+
 
 void	apply_redirections(t_redir *redir)
 {
@@ -19,128 +41,102 @@ void	apply_redirections(t_redir *redir)
 
 char	*get_path(char *cmd, char **envp)
 {
+	(void)cmd;
 	(void)envp;
-	return (cmd);
+	return (NULL);
 }
 
 void	print_command_error(char *cmd, int error_type)
 {
+	(void)cmd;
 	(void)error_type;
-	printf("Command error: %s\n", cmd);
 }
 
-int get_exit_code(int status) 
+int	get_exit_code(int status)
 {
-	 return status; 
+	return (status);
 }
 
 void	cleanup_and_exit(t_cleanup *cleanup, int status)
 {
 	(void)cleanup;
-	printf("Exiting with status %d\n", status);
 	exit(status);
 }
 
-int	is_parent_builtin(const char *cmd)
+/* ===== UTILS ===== */
+
+static t_command	make_cmd(char **argv)
 {
-	if (!cmd)
-		return (0);
-	return (ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "export") == 0
-		|| ft_strcmp(cmd, "unset") == 0 || ft_strcmp(cmd, "exit") == 0);
+	t_command	cmd;
+
+	cmd.argv = argv;
+	cmd.redirections = NULL;
+	return (cmd);
 }
 
+/* ===== MAIN TEST ===== */
 
-int	execute_builtin_simple(t_command *cmd, char ***envp)
+int	main(void)
 {
-	if (!cmd || !cmd->argv || !cmd->argv[0])
-		return (1);
-	if (ft_strcmp(cmd->argv[0], "echo") == 0)
-		return (builtin_echo(cmd));
-	if (ft_strcmp(cmd->argv[0], "pwd") == 0)
-		return (builtin_pwd(cmd));
-	if (ft_strcmp(cmd->argv[0], "env") == 0)
-		return (builtin_env(cmd, *envp));
-	return (1);
-}
-
-
-int	execute_builtin_parent(t_command *cmd, char ***envp, t_cleanup *cleanup)
-{
-	if (!cmd || !cmd->argv || !cmd->argv[0])
-		return (-1);
-	if (ft_strcmp(cmd->argv[0], "cd") == 0)
-		return (builtin_cd(cmd, *envp));
-	if (ft_strcmp(cmd->argv[0], "export") == 0)
-		return (builtin_export(cmd, envp, NULL));
-	if (ft_strcmp(cmd->argv[0], "unset") == 0)
-		return (builtin_unset(cmd, envp, NULL));
-	if (ft_strcmp(cmd->argv[0], "exit") == 0)
-		return (builtin_exit(cmd, cleanup));
-	return (-1);
-}
-
-char **init_env(void)
-{
-    char **envp = malloc(3 * sizeof(char *));
-    envp[0] = ft_strdup("PATH=/bin");
-    envp[1] = ft_strdup("HOME=/home/charbel");
+	char **envp;
+    char **export_vars;
+    
+    envp = malloc(sizeof(char *) * 3);
+    envp[0] = ft_strdup("PATH=/bin:/usr/bin");
+    envp[1] = ft_strdup("HELLO=world");
     envp[2] = NULL;
-    return envp;
-}
 
-char **init_export(void)
-{
-    char **export_vars = malloc(1 * sizeof(char *));
-    export_vars[0] = NULL;
-    return export_vars;
-}
+    export_vars = malloc(sizeof(char *) * 2);
+    export_vars[0] = ft_strdup("HELLO=world");
+    export_vars[1] = NULL;
+	t_cleanup	cleanup = {0};
 
-void free_split(char **split)
-{
-    int i = 0;
-    if (!split)
-        return;
-    while (split[i])
-    {
-        free(split[i]);
-        i++;
-    }
-    free(split);
-}
+	/* ===== echo ===== */
+	printf("== Testing echo ==\n");
+	char *echo_args[] = {"echo", "-n", "hello", "world", NULL};
+	t_command echo_cmd = make_cmd(echo_args);
+	builtin_echo(&echo_cmd);
+	printf("\n\n");
 
-// ---------- Main test ----------
-int main(void)
-{
-    t_command cmd_export;
-    t_command cmd_unset;
+	/* ===== pwd ===== */
+	printf("== Testing pwd ==\n");
+	char *pwd_args[] = {"pwd", NULL};
+	t_command pwd_cmd = make_cmd(pwd_args);
+	builtin_pwd(&pwd_cmd);
+	printf("\n");
 
-    // Simule les argv pour export et unset
-    char *argv_export[] = {"export", "TESTVAR=42", "HELLO", NULL};
-    char *argv_unset[] = {"unset", "TESTVAR", NULL};
+	/* ===== env ===== */
+	printf("== Testing env ==\n");
+	char *env_args[] = {"env", NULL};
+	t_command env_cmd = make_cmd(env_args);
+	builtin_env(&env_cmd, envp);
+	printf("\n");
 
-    cmd_export.argv = argv_export;
-    cmd_unset.argv = argv_unset;
+	/* ===== export ===== */
+	printf("== Testing export ==\n");
+	char *export_args[] = {"export", "TESTVAR=42", NULL};
+	t_command export_cmd = make_cmd(export_args);
+	builtin_export(&export_cmd, &envp, &export_vars);
 
-    char **envp = init_env();
-    char **export_vars = init_export();
+	printf("== Export vars after export ==\n");
+	print_export_vars(export_vars);
+	printf("\n");
 
-    printf("== Testing export ==\n");
-    builtin_export(&cmd_export, &envp, &export_vars);
+	/* ===== unset ===== */
+	printf("== Testing unset ==\n");
+	char *unset_args[] = {"unset", "TESTVAR", NULL};
+	t_command unset_cmd = make_cmd(unset_args);
+	builtin_unset(&unset_cmd, &envp, &export_vars);
 
-    printf("== Export vars after export ==\n");
-    for (int i = 0; export_vars[i]; i++)
-        printf("%s\n", export_vars[i]);
+	printf("== Export vars after unset ==\n");
+	print_export_vars(export_vars);
+	printf("\n");
 
-    printf("== Testing unset ==\n");
-    builtin_unset(&cmd_unset, &envp, &export_vars);
+	/* ===== exit ===== */
+	printf("== Testing exit ==\n");
+	char *exit_args[] = {"exit", "42", NULL};
+	t_command exit_cmd = make_cmd(exit_args);
+	builtin_exit(&exit_cmd, &cleanup);
 
-    printf("== Export vars after unset ==\n");
-    for (int i = 0; export_vars[i]; i++)
-        printf("%s\n", export_vars[i]);
-
-    // Libération de la mémoire
-    free_split(envp);
-    free_split(export_vars);
-
-    return 0;
+	return (0);
 }
