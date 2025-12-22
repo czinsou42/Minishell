@@ -6,33 +6,33 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 07:44:19 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/14 12:09:09 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/22 16:21:34 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	remove_var(char ***export_vars, char *name)
+static void	remove_var(char ***envp, char *name)
 {
 	int	i;
 	int	j;
 	int	len;
 
 	i = 0;
-	if (!export_vars || !*export_vars || !name)
+	if (!envp || !*envp || !name)
 		return ;
 	len = ft_strlen(name);
-	while ((*export_vars)[i])
+	while ((*envp)[i])
 	{
-		if (ft_strncmp((*export_vars)[i], name, len) == 0
-			&& ((*export_vars)[i][len] == '='
-				|| (*export_vars)[i][len] == '\0'))
+		if (ft_strncmp((*envp)[i], name, len) == 0
+			&& ((*envp)[i][len] == '='
+				|| (*envp)[i][len] == '\0'))
 		{
-			free((*export_vars)[i]);
+			free((*envp)[i]);
 			j = i;
-			while ((*export_vars)[j])
+			while ((*envp)[j])
 			{
-				(*export_vars)[j] = (*export_vars)[j + 1];
+				(*envp)[j] = (*envp)[j + 1];
 				j++;
 			}
 			return ;
@@ -41,7 +41,7 @@ static void	remove_var(char ***export_vars, char *name)
 	}
 }
 
-int	builtin_unset(t_command *cmd, char ***env, char ***export_vars)
+int	builtin_unset(t_command *cmd, char ***env)
 {
 	int	i;
 
@@ -56,12 +56,42 @@ int	builtin_unset(t_command *cmd, char ***env, char ***export_vars)
 				cmd->argv[i]);
 		}
 		else
-		{
 			remove_var(env, cmd->argv[i]);
-			remove_var(export_vars, cmd->argv[i]);
-		}
 		i++;
 	}
 	return (0);
 }
 
+// int	builtin_unset(t_command *cmd, char ***envp)
+// {
+// 	int		i;
+// 	int		j;
+// 	int		len;
+// 	char	*name;
+
+// 	if (!cmd || !cmd->argv[1])
+// 		return (0);
+// 	i = 1;
+// 	while (cmd->argv[i])
+// 	{
+// 		name = cmd->argv[i];
+// 		len = ft_strlen(name);
+// 		j = 0;
+// 		while ((*envp)[j])
+// 		{
+// 			if (!ft_strncmp((*envp)[j], name, len) && (*envp)[j][len] == '=')
+// 			{
+// 				free((*envp)[j]);
+// 				while ((*envp)[j])
+// 				{
+// 					(*envp)[j] = (*envp)[j + 1];
+// 					j++;
+// 				}
+// 				return ;
+// 			}
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// 	return (0);
+// }

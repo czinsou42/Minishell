@@ -6,40 +6,11 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 14:45:57 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/17 17:57:17 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/22 16:23:31 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	env_add(char ***envp, char *name, char *value)
-{
-	char	**new_envp;
-	char	*new_var;
-	int		i;
-	int		count;
-
-	count = 0;
-	while ((*envp)[count])
-		count++;
-	new_envp = malloc(sizeof(char *) * (count + 2));
-	if (!new_envp)
-		return (1);
-	i = 0;
-	while (i < count)
-	{
-		new_envp[i] = (*envp)[i];
-		i++;
-	}
-	new_var = ft_strjoin3(name, "=", value);
-	if (!new_var)
-		return (free(new_envp), 1);
-	new_envp[count] = new_var;
-	new_envp[count + 1] = NULL;
-	free(*envp);
-	*envp = new_envp;
-	return (0);
-}
 
 int	update_env_forcd(char ***envp, char *name, char *value)
 {
@@ -98,11 +69,12 @@ int	builtin_cd(t_command *cmd, char ***envp)
 {
 	char	oldcwd[PATH_MAX];
 	char	*path;
-	int		should_free;
 	char	*home;
+	int		should_free;
 
 	if (!getcwd(oldcwd, sizeof(oldcwd)))
 		return (perror("getcwd"), 1);
+	should_free = 0;
 	if (!cmd->argv[1])
 	{
 		home = ft_getenv("HOME", *envp);

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_or.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 17:37:02 by amwahab           #+#    #+#             */
-/*   Updated: 2025/11/19 09:04:58 by amwahab          ###   ########.fr       */
+/*   Updated: 2025/12/22 17:54:13 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	exec_or(t_node *node, char **envp, t_cleanup *cleanup)
+int	exec_or(t_node *node, char ***envp, t_cleanup *cleanup)
 {
 	int	status;
 
@@ -28,5 +28,5 @@ int	exec_or(t_node *node, char **envp, t_cleanup *cleanup)
 		else
 			status = exec_ast(node->right, envp, cleanup);
 	}
-	return(status);
+	return (status);
 }

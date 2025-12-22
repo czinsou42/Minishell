@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:50:17 by amwahab           #+#    #+#             */
-/*   Updated: 2025/11/19 09:03:36 by amwahab          ###   ########.fr       */
+/*   Updated: 2025/12/22 17:57:16 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	exec_ast(t_node *node, char **envp, t_cleanup *cleanup)
+int	exec_ast(t_node *node, char ***envp, t_cleanup *cleanup)
 {
 	int	status;
 
@@ -25,7 +25,7 @@ int	exec_ast(t_node *node, char **envp, t_cleanup *cleanup)
 		status = exec_and(node, envp, cleanup);
 	else if (node->type == NODE_OR)
 		status = exec_or(node, envp, cleanup);
-	/*else if (node->type == NODE_PIPE)
-		status = exec_pipeline(node, envp);*/
+	else if (node->type == NODE_PIPE)
+		status = exec_pipeline(node, envp, cleanup);
 	return (status);
 }

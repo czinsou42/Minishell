@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2025/12/17 17:56:04 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/22 17:34:02 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,12 @@ char	**copy_envp(char **envp)
 	{
 		new_envp[i] = ft_strdup(envp[i]); // ← COPIE chaque string
 		if (!new_envp[i])
+		{
+			while (i > 0)
+				free(new_envp[--i]);
+			free(new_envp);
 			return (NULL); // TODO: free ce qui a été alloué
+		}
 		i++;
 	}
 	new_envp[count] = NULL;
@@ -109,7 +114,7 @@ int	main(int argc, char **argv, char **envp)
 		cleanup.line = line;
 		cleanup.ast = node;
 		cleanup.tokens = token;
-		if (exec_ast(node, my_envp, &cleanup) == -1)
+		if (exec_ast(node, &my_envp, &cleanup) == -1)
 		{
 			free(line);
 			free_tokens(token);

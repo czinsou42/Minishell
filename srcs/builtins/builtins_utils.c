@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 14:34:05 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/17 15:17:02 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/22 17:03:27 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,33 @@ void	sort_env(char **env)
 		}
 		i++;
 	}
+}
+
+int	env_add(char ***envp, char *name, char *value)
+{
+	char	**new_envp;
+	char	*new_var;
+	int		i;
+	int		count;
+
+	count = 0;
+	while ((*envp)[count])
+		count++;
+	new_envp = malloc(sizeof(char *) * (count + 2));
+	if (!new_envp)
+		return (free (new_envp), 1);
+	i = 0;
+	while (i < count)
+	{
+		new_envp[i] = (*envp)[i];
+		i++;
+	}
+	new_var = ft_strjoin3(name, "=", value);
+	if (!new_var)
+		return (free(new_envp), 1);
+	new_envp[count] = new_var;
+	new_envp[count + 1] = NULL;
+	free(*envp);
+	*envp = new_envp;
+	return (0);
 }

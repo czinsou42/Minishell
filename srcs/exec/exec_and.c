@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_and.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 15:07:59 by amwahab           #+#    #+#             */
-/*   Updated: 2025/11/19 09:04:29 by amwahab          ###   ########.fr       */
+/*   Updated: 2025/12/22 17:53:46 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	exec_and(t_node *node, char **envp, t_cleanup *cleanup)
+int	exec_and(t_node *node, char ***envp, t_cleanup *cleanup)
 {
 	int	status;
 
@@ -28,5 +28,5 @@ int	exec_and(t_node *node, char **envp, t_cleanup *cleanup)
 		else
 			status = exec_ast(node->right, envp, cleanup);
 	}
-	return(status);
+	return (status);
 }

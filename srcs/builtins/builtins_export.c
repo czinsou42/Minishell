@@ -6,39 +6,13 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 17:23:33 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/14 12:54:53 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/22 17:13:16 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	create_env(char ***envp, char *name, char *value, int i)
-{
-	int		j;
-	char	*new_var;
-	char	**tmp;
-
-	j = 0;
-	new_var = ft_strjoin3(name, "=", value);
-	if (!new_var)
-		return (1);
-	tmp = malloc(sizeof(char *) * (i + 2));
-	if (!tmp)
-		return (free(new_var), 1);
-	j = 0;
-	while (j < i)
-	{
-		tmp[j] = (*envp)[j];
-		j++;
-	}
-	tmp[i] = new_var;
-	tmp[i + 1] = NULL;
-	free(*envp);
-	*envp = tmp;
-	return (0);
-}
-
-int	update_env(char ***envp, char *name, char *value)
+int	update_or_add_env(char ***envp, char *name, char *value)
 {
 	int		i;
 	int		len;
@@ -59,37 +33,105 @@ int	update_env(char ***envp, char *name, char *value)
 		}
 		i++;
 	}
-	return (create_env(envp, name, value, i));
+	return (env_add(envp, name, value));
 }
 
-void	print_export_vars(char **export_vars)
+static void	print_export_line(char *var)
+{
+	char	*eq;
+	char	*name;
+
+	if (!var || !var)
+		return ;
+	eq = ft_strchr(var, '=');
+	if (eq)
+	{
+		name = ft_strndup(var, eq - var);
+		if (!name)
+			return ;
+		printf("declare -x %s=\"%s\"\n", name, eq + 1);
+		free(name);
+	}
+	else
+		printf("declare -x %s\n", var);
+}
+
+static void	print_all_exports(char **envp)
 {
 	int		i;
+	char	**sorted;
+	int		count;
 
-	sort_env(export_vars);
+	if (!envp)
+		return ;
+	count = 0;
+	while (envp[count])
+		count++;
+	sorted = malloc(sizeof(char *) * (count + 1));
+	if (!sorted)
+		return ;
 	i = 0;
-	while (export_vars[i])
+	while (i < count)
 	{
-		printf("declare -x %s\n", export_vars[i]);
+		sorted[i] = envp[i];
 		i++;
 	}
+	sorted[count] = NULL;
+	sort_env(sorted);
+	i = 0;
+	while (sorted[i])
+	{
+		print_export_line(sorted[i]);
+		i++;
+	}
+	free(sorted);
 }
 
-int	builtin_export(t_command *cmd, char ***env, char ***export_vars)
+int	handle_export_arg(char *arg, char ***env)
+{
+	char	*eq;
+	char	*name;
+	char	*value;
+
+	eq = ft_strchr(arg, '=');
+	if (eq)
+	{
+		name = ft_strndup(arg, eq - arg);
+		if (!name)
+			return (1);
+		if (!is_valid_env(name))
+			return (printf("minishell: export: `%s': not a valid identifier\n",
+					name), free(name), 0);
+		value = eq + 1;
+		update_or_add_env(env, name, value);
+		for (int k = 0; (*env)[k]; k++)
+			printf("DEBUG env[%d] = %s\n", k, (*env)[k]);
+		free(name);
+	}
+	else
+	{
+		if (!is_valid_env(arg))
+			return (printf("minishell: export: `%s': not a valid identifier\n",
+					arg), 0);
+	}
+	return (0);
+}
+
+int	builtin_export(t_command *cmd, char ***envp)
 {
 	int	i;
 
-	if (!cmd || !cmd->argv || !env || !export_vars)
+	if (!cmd || !cmd->argv || !envp)
 		return (1);
 	if (!cmd->argv[1])
 	{
-		print_export_vars(*export_vars);
+		print_all_exports(*envp);
 		return (0);
 	}
 	i = 1;
 	while (cmd->argv[i])
 	{
-		handle_export_arg(cmd->argv[i], env, export_vars);
+		handle_export_arg(cmd->argv[i], envp);
 		i++;
 	}
 	return (0);

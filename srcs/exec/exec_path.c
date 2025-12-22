@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*   exec_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:35:38 by amwahab           #+#    #+#             */
-/*   Updated: 2025/10/23 18:02:09 by amwahab          ###   ########.fr       */
+/*   Updated: 2025/12/22 16:35:56 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*get_path(char *cmd, char **envp)
 	if (!path)
 		return (NULL);
 	paths = ft_split(path, ':');
-	if(!paths)
+	if (!paths)
 		return (NULL);
 	path = try_path(paths, cmd);
 	return (ft_free_split(paths), path);
@@ -38,7 +38,7 @@ char	*find_path_in_env(char **envp)
 	int		i;
 
 	i = 0;
-	while(envp[i])
+	while (envp[i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 			return (envp[i] + 5);
@@ -52,7 +52,7 @@ char	*try_path(char **paths, char *cmd)
 	int		i;
 	char	*full_path;
 	char	*tmp;
-	
+
 	i = 0;
 	while (paths[i])
 	{

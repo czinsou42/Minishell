@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 15:19:13 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/17 15:52:46 by czinsou          ###   ########.fr       */
+/*   Updated: 2025/12/22 16:28:28 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ int	execute_builtin_parent(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	if (ft_strcmp(cmd->argv[0], "cd") == 0)
 		return (builtin_cd(cmd, envp));
 	if (ft_strcmp(cmd->argv[0], "export") == 0)
-		return (builtin_export(cmd, envp, NULL));
+		return (builtin_export(cmd, envp));
 	if (ft_strcmp(cmd->argv[0], "unset") == 0)
-		return (builtin_unset(cmd, envp, NULL));
+		return (builtin_unset(cmd, envp));
 	if (ft_strcmp(cmd->argv[0], "exit") == 0)
 		return (builtin_exit(cmd, cleanup));
 	return (-1);
