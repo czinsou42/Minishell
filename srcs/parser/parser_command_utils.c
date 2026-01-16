@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_command_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2025/11/19 08:46:19 by amwahab          ###   ########.fr       */
+/*   Updated: 2026/01/13 14:22:44 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	**create_argv(t_token *tokens, int count, int length)
 		}
 		if (current->type == TOKEN_WORD)
 		{
-			argv[i++] = ft_strdup(current->str);
+			argv[i++] = remove_quote(current->str);
 			if (!argv[i - 1])
 				return (ft_free_split(argv), NULL);
 		}

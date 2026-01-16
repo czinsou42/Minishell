@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 16:12:01 by amwahab           #+#    #+#             */
-/*   Updated: 2025/10/22 11:30:07 by amwahab          ###   ########.fr       */
+/*   Updated: 2026/01/13 13:16:14 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	print_syntax_error(char *token)
 }
 
 t_node	*handle_operator_parser(t_token *tokens, int length,
-							t_operator_info operator_info)
+		t_operator_info operator_info)
 {
 	t_node	*node;
 
@@ -115,4 +115,32 @@ t_node	*create_command_node(t_token *tokens, int length)
 	if (!command)
 		return (NULL);
 	return (create_node(NODE_COMMAND, command));
+}
+
+char	*remove_quote(char *str)
+{
+	char	*res;
+	int		i;
+	int		j;
+	char	quote;
+
+	i = 0;
+	j = 0;
+	res = malloc(sizeof(char) * (ft_strlen(str) + 1));
+	if (!res)
+		return (NULL);
+	while (str[i])
+	{
+		if ((str[i] == '\'') || (str[i] == '"'))
+		{
+			quote = str[i++];
+			while (str[i] && str[i] != quote)
+				res[j++] = str[i++];
+			if (str[i] == quote)
+				i++;
+		}
+		else
+			res[j++] = str[i++];
+	}
+	return ((res[j] = '\0'), res);
 }

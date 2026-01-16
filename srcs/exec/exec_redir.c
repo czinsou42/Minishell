@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 13:58:04 by amwahab           #+#    #+#             */
-/*   Updated: 2025/11/10 18:35:37 by amwahab          ###   ########.fr       */
+/*   Updated: 2026/01/05 16:38:38 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	apply_redirections(t_redir *redir)
 {
 	t_redir	*current;
 
-	printf("apply redirection");
+	// printf("apply redirection");
 	current = redir;
 	while (current)
 	{

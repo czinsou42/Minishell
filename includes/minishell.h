@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2025/12/22 17:49:49 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/01/13 15:46:40 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+
+extern int						g_exit_status;
 
 /*=============================== CODE ERREUR =====================================*/
 
@@ -246,9 +248,9 @@ int						exec_ast(t_node *node, char ***envp,
 							t_cleanup *cleanup);
 int						exec_pipeline(t_node *node, char ***envp,
 							t_cleanup *cleanup);
-int						exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup);
-int						exec_or(t_node *node, char ***envp,
+int						exec_command(t_command *cmd, char ***envp,
 							t_cleanup *cleanup);
+int						exec_or(t_node *node, char ***envp, t_cleanup *cleanup);
 int						exec_and(t_node *node, char ***envp,
 							t_cleanup *cleanup);
 
@@ -299,5 +301,8 @@ int						update_env_forcd(char ***envp, char *name, char *value);
 int						env_add(char ***envp, char *name, char *value);
 int						update_or_add_env(char ***envp, char *name,
 							char *value);
+t_pipeline				*extract_cmd(t_node *node);
+char					*remove_quote(char *str);
+void					handler_signal(int sig);
 
 #endif

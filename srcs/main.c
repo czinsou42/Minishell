@@ -6,15 +6,22 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2025/12/22 17:34:02 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/01/13 15:54:59 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int g_exit_status = 0;
+
 void	handler_signal(int sig)
 {
 	(void)sig;
+	g_exit_status = 130;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 // Dans ton init_shell() ou main()
 char	**copy_envp(char **envp)
@@ -74,8 +81,9 @@ int	main(int argc, char **argv, char **envp)
 	my_envp = copy_envp(envp);
 	if (!my_envp)
 		return (1);
-	signal(SIGCLD, handler_signal);
+	signal(SIGINT, handler_signal);
 	signal(SIGQUIT, SIG_IGN);
+	cleanup.last_status = 0;
 	while (1)
 	{
 		line = readline("minishell> ");
@@ -114,7 +122,8 @@ int	main(int argc, char **argv, char **envp)
 		cleanup.line = line;
 		cleanup.ast = node;
 		cleanup.tokens = token;
-		if (exec_ast(node, &my_envp, &cleanup) == -1)
+		g_exit_status = exec_ast(node, &my_envp, &cleanup);
+		if (g_exit_status == -1)
 		{
 			free(line);
 			free_tokens(token);

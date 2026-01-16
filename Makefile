@@ -6,7 +6,7 @@
 #    By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2025/12/22 17:58:38 by czinsou          ###   ########.fr        #
+#    Updated: 2026/01/13 14:27:16 by czinsou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ TEST_EXPAND = test_expand
 TEST_BUILTINS = test_builtins
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g3
 
 LEXER_SRCS = srcs/lexer/lexer.c \
 			srcs/lexer/lexer_handlers.c \

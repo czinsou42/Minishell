@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 11:24:28 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/17 15:26:14 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/01/13 15:43:38 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	builtin_echo(t_command *cmd)
 {
 	int	i;
 	int	newline;
+	int	j;
 
 	i = 1;
 	newline = 1;
@@ -38,9 +39,20 @@ int	builtin_echo(t_command *cmd)
 		newline = 0;
 		i++;
 	}
+	j = 0;
 	while (cmd->argv[i])
 	{
-		printf("%s", cmd->argv[i]);
+		j = 0;
+		while (cmd->argv[i][j])
+		{
+			if (ft_strncmp(cmd->argv[i] + j, "$?", 2) == 0)
+			{
+				printf("%d", g_exit_status);
+				j += 2;
+			}
+			if (cmd->argv[i][j])
+				printf("%c", cmd->argv[i][j++]);
+		}
 		if (cmd->argv[i + 1])
 			printf(" ");
 		i++;
@@ -64,5 +76,3 @@ int	builtin_env(t_command *cmd, char **envp)
 	}
 	return (0);
 }
-
-

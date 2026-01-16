@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 17:23:33 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/22 17:13:16 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/01/05 16:30:36 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,6 @@ int	handle_export_arg(char *arg, char ***env)
 					name), free(name), 0);
 		value = eq + 1;
 		update_or_add_env(env, name, value);
-		for (int k = 0; (*env)[k]; k++)
-			printf("DEBUG env[%d] = %s\n", k, (*env)[k]);
 		free(name);
 	}
 	else

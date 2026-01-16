@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2025/12/14 11:12:33 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/01/16 15:45:52 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ void print_command_error(char *cmd, int error_type)
 int	get_exit_code(int status)
 {
 	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
+		return (g_exit_status = WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
+		return (g_exit_status = (128 + WTERMSIG(status)));
 	return (-1);
 }
 
