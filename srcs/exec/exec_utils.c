@@ -6,18 +6,17 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2026/01/16 15:45:52 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/16 15:39:16 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void print_command_error(char *cmd, int error_type)
+void	print_command_error(char *cmd, int error_type)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": ", 2);
-
 	if (error_type == 127)
 		ft_putstr_fd("command not found\n", 2);
 	else if (error_type == 126)

@@ -6,7 +6,7 @@
 #    By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2026/01/13 14:27:16 by czinsou          ###   ########.fr        #
+#    Updated: 2026/02/16 16:09:41 by czinsou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,10 @@ AST_SRCS = srcs/ast/ast_node.c \
 PARSER_SRCS = srcs/parser/parser.c \
 			srcs/parser/parser_utils.c \
 			srcs/parser/parser_command.c \
-			srcs/parser/parser_command_utils.c
+			srcs/parser/parser_command_utils.c \
+			srcs/parser/parser_utils2.c \
+			srcs/parser/parser_applyredir.c \
+			srcs/parser/parser_create_argv.c \
 
 EXPAND_SRCS = srcs/expander/expand.c \
 			srcs/expander/expand_utils.c

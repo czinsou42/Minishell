@@ -6,13 +6,13 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/01/13 15:54:59 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/16 15:47:12 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int g_exit_status = 0;
+int		g_exit_status = 0;
 
 void	handler_signal(int sig)
 {
@@ -23,7 +23,7 @@ void	handler_signal(int sig)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
-// Dans ton init_shell() ou main()
+
 char	**copy_envp(char **envp)
 {
 	int		i;
@@ -39,13 +39,13 @@ char	**copy_envp(char **envp)
 	i = 0;
 	while (i < count)
 	{
-		new_envp[i] = ft_strdup(envp[i]); // ← COPIE chaque string
+		new_envp[i] = ft_strdup(envp[i]);
 		if (!new_envp[i])
 		{
 			while (i > 0)
 				free(new_envp[--i]);
 			free(new_envp);
-			return (NULL); // TODO: free ce qui a été alloué
+			return (NULL);
 		}
 		i++;
 	}

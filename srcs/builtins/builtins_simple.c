@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 11:24:28 by czinsou           #+#    #+#             */
-/*   Updated: 2026/01/13 15:43:38 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/16 15:17:07 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,63 @@ int	builtin_pwd(t_command *cmd)
 	return (0);
 }
 
+// int	builtin_echo(t_command *cmd)
+// {
+// 	int	i;
+// 	int	newline;
+// 	int	j;
+
+// 	i = 1;
+// 	newline = 1;
+// 	if (cmd->argv[1] && ft_strcmp(cmd->argv[1], "-n") == 0)
+// 	{
+// 		newline = 0;
+// 		i++;
+// 	}
+// 	j = 0;
+// 	while (cmd->argv[i])
+// 	{
+// 		j = 0;
+// 		while (cmd->argv[i][j])
+// 		{
+// 			if (ft_strncmp(cmd->argv[i] + j, "$?", 2) == 0)
+// 			{
+// 				printf("%d", g_exit_status);
+// 				j += 2;
+// 			}
+// 			if (cmd->argv[i][j])
+// 				printf("%c", cmd->argv[i][j++]);
+// 		}
+// 		if (cmd->argv[i + 1])
+// 			printf(" ");
+// 		i++;
+// 	}
+// 	if (newline)
+// 		printf("\n");
+// 	return (0);
+// }
+
+static void	print_echo_arg(char *arg)
+{
+	int	j;
+
+	j = 0;
+	while (arg[j])
+	{
+		if (ft_strncmp(arg + j, "$?", 2) == 0)
+		{
+			printf("%d", g_exit_status);
+			j += 2;
+		}
+		if (arg[j])
+			printf("%c", arg[j++]);
+	}
+}
+
 int	builtin_echo(t_command *cmd)
 {
 	int	i;
 	int	newline;
-	int	j;
 
 	i = 1;
 	newline = 1;
@@ -39,20 +91,9 @@ int	builtin_echo(t_command *cmd)
 		newline = 0;
 		i++;
 	}
-	j = 0;
 	while (cmd->argv[i])
 	{
-		j = 0;
-		while (cmd->argv[i][j])
-		{
-			if (ft_strncmp(cmd->argv[i] + j, "$?", 2) == 0)
-			{
-				printf("%d", g_exit_status);
-				j += 2;
-			}
-			if (cmd->argv[i][j])
-				printf("%c", cmd->argv[i][j++]);
-		}
+		print_echo_arg(cmd->argv[i]);
 		if (cmd->argv[i + 1])
 			printf(" ");
 		i++;

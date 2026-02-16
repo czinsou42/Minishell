@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/01/13 15:45:08 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/16 15:19:55 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,9 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 			exit(0);
 		path = get_path(cmd->argv[0], *envp);
 		if (!path)
-		{
-			print_command_error(cmd->argv[0], 127);
-			exit(127);
-		}
+			(print_command_error(cmd->argv[0], 127), exit(127));
 		execve(path, cmd->argv, *envp);
-		print_command_error(cmd->argv[0], 126);
-		exit(126);
+		(print_command_error(cmd->argv[0], 126), exit(126));
 	}
 	waitpid(pid, &status, 0);
 	return (get_exit_code(status));

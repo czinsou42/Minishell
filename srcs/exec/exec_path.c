@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:35:38 by amwahab           #+#    #+#             */
-/*   Updated: 2025/12/22 16:35:56 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/16 15:20:16 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ char	*get_path(char *cmd, char **envp)
 {
 	char	*path;
 	char	**paths;
-	
+
 	if (ft_strchr(cmd, '/'))
 	{
 		if (access(cmd, X_OK) != -1)

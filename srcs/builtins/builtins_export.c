@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 17:23:33 by czinsou           #+#    #+#             */
-/*   Updated: 2026/01/05 16:30:36 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/16 15:13:27 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,9 @@ static void	print_all_exports(char **envp)
 	}
 	sorted[count] = NULL;
 	sort_env(sorted);
-	i = 0;
-	while (sorted[i])
-	{
+	i = -1;
+	while (sorted[++i])
 		print_export_line(sorted[i]);
-		i++;
-	}
 	free(sorted);
 }
 

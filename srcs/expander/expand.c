@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:28:47 by amwahab           #+#    #+#             */
-/*   Updated: 2025/11/19 08:40:52 by amwahab          ###   ########.fr       */
+/*   Updated: 2026/02/16 15:41:04 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void expander(t_token *tokens, char **envp)
+void	expander(t_token *tokens, char **envp)
 {
 	t_token	*current;
 	char	*expanded_str;
@@ -24,7 +24,8 @@ void expander(t_token *tokens, char **envp)
 		if (current->quote != SINGLE_QUOTE)
 		{
 			expanded_str = expand(current->str, envp);
-			if (current->type == TOKEN_REDIR_HEREDOC && current->heredoc_content)
+			if (current->type == TOKEN_REDIR_HEREDOC
+				&& current->heredoc_content)
 			{
 				expanded_heredoc = expand(current->heredoc_content, envp);
 				free(current->heredoc_content);
@@ -38,7 +39,7 @@ void expander(t_token *tokens, char **envp)
 	return ;
 }
 
-char *expand(char *str, char **envp)
+char	*expand(char *str, char **envp)
 {
 	int		total_len;
 	char	*expanded_str;
@@ -52,15 +53,15 @@ char *expand(char *str, char **envp)
 	if (!result)
 	{
 		free(expanded_str);
-		return(NULL);
+		return (NULL);
 	}
 	return (expanded_str);
 }
 
-char *ft_getenv(char *name, char **envp)
+char	*ft_getenv(char *name, char **envp)
 {
-	int i;
-	int len;
+	int	i;
+	int	len;
 
 	if (!name || !envp)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:54:51 by amwahab           #+#    #+#             */
-/*   Updated: 2026/01/13 15:11:53 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/16 15:40:53 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ char	*copy_expanded_str(char *str, char *result, char **envp)
 
 int	is_valid_var_char(char c)
 {
-	if (ft_isalpha(c) || c == '_') 
+	if (ft_isalpha(c) || c == '_')
 		return (1);
 	return (0);
 }
