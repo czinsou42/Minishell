@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/16 15:52:07 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 15:04:40 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@
 # include <sys/wait.h>
 
 extern int				g_exit_status;
-
-# define REDIR_ERROR ((t_redir *)-1)
 
 typedef enum e_quote_type
 {
@@ -121,6 +119,14 @@ typedef struct s_cleanup
 	t_node				*ast;
 	int					last_status;
 }						t_cleanup;
+
+typedef struct s_expand_tokens
+{
+	char				*str;
+	char				*result;
+	char				**envp;
+}						t_expand_tokens;
+
 t_token					*lexer(char *line);
 t_token					*create_token(t_token_type type, t_quote_type quote,
 							char *str, int len);
@@ -135,15 +141,13 @@ t_quote_type			get_quote_type(char *line, int *i, char *quote_char);
 t_quote_type			get_quote_type(char *line, int *i, char *quote_char);
 int						process_heredoc(t_token *tokens);
 void					expander(t_token *tokens, char **envp);
-char					*expand(char *str, char **envp);
+char					*expand(t_expand_tokens *tokens);
 
 // UTILS
 int						get_var_len(char *str, int *i, char **envp);
 int						expanded_len(char *str, char **envp);
-int						copy_var_value(char *str, int *i, char *result, int k,
-							char **envp);
-char					*copy_expanded_str(char *str, char *result,
-							char **envp);
+int						copy_var_value(t_expand_tokens *tokens, int *i, int k);
+char					*copy_expanded_str(t_expand_tokens *tokens);
 char					*ft_getenv(char *name, char **envp);
 int						is_valid_var_char(char c);
 t_node					*create_node(t_node_type type, t_command *command);
@@ -227,5 +231,10 @@ t_pipeline				*extract_cmd(t_node *node);
 char					*remove_quote(char *str);
 void					handler_signal(int sig);
 void					handle_status(int status);
+void					wait_all(pid_t g_signal);
+int						is_redirection(t_token *token);
+char					**copy_envp(char **envp);
+void					handler_signal(int sig);
+void					free_envp(char **envp);
 
 #endif

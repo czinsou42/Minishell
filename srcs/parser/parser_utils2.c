@@ -6,20 +6,39 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/16 16:08:12 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 12:44:51 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	redir_add_back(t_redir **lst, t_redir *new)
+{
+	t_redir	*current;
+
+	if (!lst || !new)
+		return ;
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	current = *lst;
+	while (current->next)
+		current = current->next;
+	current->next = new;
+}
+
 t_node	*create_command_node(t_token *tokens, int length)
 {
 	t_command	*command;
+	t_node		*node;
 
 	command = parse_command(tokens, length);
 	if (!command)
 		return (NULL);
-	return (create_node(NODE_COMMAND, command));
+	node = create_node(NODE_COMMAND, command);
+	return (node);
 }
 
 char	*remove_quote(char *str)

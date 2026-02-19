@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:54:51 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/16 15:40:53 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 14:21:02 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	expanded_len(char *str, char **envp)
 	return (total_len);
 }
 
-int	copy_var_value(char *str, int *i, char *result, int k, char **envp)
+int	copy_var_value(t_expand_tokens *tokens, int *i, int k)
 {
 	int		j;
 	char	*tmp;
@@ -63,42 +63,42 @@ int	copy_var_value(char *str, int *i, char *result, int k, char **envp)
 	int		len;
 
 	j = *i + 1;
-	while (ft_isalnum(str[j]) || str[j] == '_')
+	while (ft_isalnum(tokens->str[j]) || tokens->str[j] == '_')
 		j++;
-	tmp = ft_substr(str, *i + 1, j - *i - 1);
+	tmp = ft_substr(tokens->str, *i + 1, j - *i - 1);
 	if (!tmp)
 		return (-1);
-	value = ft_getenv(tmp, envp);
+	value = ft_getenv(tmp, tokens->envp);
 	free(tmp);
 	*i = j - 1;
 	if (!value)
 		return (k);
 	len = 0;
 	while (value[len])
-		result[k++] = value[len++];
+		tokens->result[k++] = value[len++];
 	return (k);
 }
 
-char	*copy_expanded_str(char *str, char *result, char **envp)
+char	*copy_expanded_str(t_expand_tokens *tokens)
 {
 	int	i;
 	int	k;
 
 	i = -1;
 	k = 0;
-	while (str[++i])
+	while (tokens->str[++i])
 	{
-		if (str[i] == '$' && is_valid_var_char(str[i + 1]))
+		if (tokens->str[i] == '$' && is_valid_var_char(tokens->str[i + 1]))
 		{
-			k = copy_var_value(str, &i, result, k, envp);
+			k = copy_var_value(tokens, &i, k);
 			if (k == -1)
 				return (NULL);
 		}
 		else
-			result[k++] = str[i];
+			tokens->result[k++] = tokens->str[i];
 	}
-	result[k] = '\0';
-	return (result);
+	tokens->result[k] = '\0';
+	return (tokens->result);
 }
 
 int	is_valid_var_char(char c)

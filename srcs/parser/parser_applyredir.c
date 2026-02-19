@@ -6,21 +6,13 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/16 16:07:03 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 11:35:58 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_redirection(t_token *token)
-{
-	return (token->type == TOKEN_REDIR_IN
-		|| token->type == TOKEN_REDIR_OUT
-		|| token->type == TOKEN_REDIR_HEREDOC
-		|| token->type == TOKEN_REDIR_APPEND);
-}
-
-static t_redir	*create_redir_node(t_token *current, t_redir *head)
+static t_redir	*create_redir_node(t_token *current)
 {
 	t_redir	*redir;
 
@@ -28,18 +20,17 @@ static t_redir	*create_redir_node(t_token *current, t_redir *head)
 	if (!redir)
 		return (NULL);
 	redir->type = token_to_redir_type(current->type);
-	if (current->next && current->next->type == TOKEN_WORD)
-		redir->file = ft_strdup(current->next->str);
-	else
+	if (!current->next || current->next->type != TOKEN_WORD)
 	{
-		free(redir);
 		if (current->next)
 			print_parser_redir_error(current->next);
 		else
 			print_unexpected_token();
-		free_redirections(head);
-		return (REDIR_ERROR);
+		return (free(redir), NULL);
 	}
+	redir->file = ft_strdup(current->next->str);
+	if (!redir->file)
+		return (free(redir), NULL);
 	redir->next = NULL;
 	if (current->type == TOKEN_REDIR_HEREDOC)
 		redir->heredoc_content = ft_strdup(current->heredoc_content);
@@ -60,9 +51,12 @@ t_redir	*parse_redirections(t_token *tokens, int length)
 	{
 		if (is_redirection(current))
 		{
-			redir = create_redir_node(current, head);
-			if (!redir || redir == REDIR_ERROR)
-				return (redir);
+			redir = create_redir_node(current);
+			if (!redir)
+			{
+				free_redirections(head);
+				return (NULL);
+			}
 			redir_add_back(&head, redir);
 			current = current->next;
 		}

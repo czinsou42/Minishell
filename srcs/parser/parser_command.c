@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_command.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amwahab <amwahab@42.student.fr>            +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 08:54:10 by amwahab           #+#    #+#             */
-/*   Updated: 2025/11/19 08:47:03 by amwahab          ###   ########.fr       */
+/*   Updated: 2026/02/19 14:04:49 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,11 @@ t_command	*parse_command(t_token *tokens, int length)
 	t_redir		*head_redir;
 	t_command	*command;
 
-	head_redir = NULL;
 	count = count_tokens_word(tokens, length);
 	argv = create_argv(tokens, count, length);
 	if (!argv)
 		return (NULL);
 	head_redir = parse_redirections(tokens, length);
-	if (head_redir == REDIR_ERROR)
-		return (ft_free_split(argv), NULL);
 	command = malloc(sizeof(t_command));
 	if (!command)
 		return (free_redirections(head_redir), ft_free_split(argv), NULL);

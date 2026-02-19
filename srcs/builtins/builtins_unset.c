@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 07:44:19 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/22 16:21:34 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 13:18:39 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,37 +61,3 @@ int	builtin_unset(t_command *cmd, char ***env)
 	}
 	return (0);
 }
-
-// int	builtin_unset(t_command *cmd, char ***envp)
-// {
-// 	int		i;
-// 	int		j;
-// 	int		len;
-// 	char	*name;
-
-// 	if (!cmd || !cmd->argv[1])
-// 		return (0);
-// 	i = 1;
-// 	while (cmd->argv[i])
-// 	{
-// 		name = cmd->argv[i];
-// 		len = ft_strlen(name);
-// 		j = 0;
-// 		while ((*envp)[j])
-// 		{
-// 			if (!ft_strncmp((*envp)[j], name, len) && (*envp)[j][len] == '=')
-// 			{
-// 				free((*envp)[j]);
-// 				while ((*envp)[j])
-// 				{
-// 					(*envp)[j] = (*envp)[j + 1];
-// 					j++;
-// 				}
-// 				return ;
-// 			}
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// 	return (0);
-// }

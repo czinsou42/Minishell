@@ -1,32 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_redir.c                                       :+:      :+:    :+:   */
+/*   expand_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/27 13:58:04 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 14:03:40 by czinsou          ###   ########.fr       */
+/*   Created: 2026/02/19 14:43:20 by czinsou           #+#    #+#             */
+/*   Updated: 2026/02/19 14:58:30 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	apply_redirections(t_redir *redir)
+char	*ft_getenv(char *name, char **envp)
 {
-	t_redir	*current;
+	int	i;
+	int	len;
 
-	current = redir;
-	while (current)
+	if (!name || !envp)
+		return (NULL);
+	len = ft_strlen(name);
+	i = 0;
+	while (envp[i])
 	{
-		if (current->type == REDIR_IN)
-			apply_in(current);
-		else if (current->type == REDIR_OUT)
-			apply_out(current);
-		else if (current->type == REDIR_APPEND)
-			apply_append(current);
-		else if (current->type == REDIR_HEREDOC)
-			apply_heredoc(current);
-		current = current->next;
+		if (ft_strncmp(envp[i], name, len) == 0 && envp[i][len] == '=')
+			return (envp[i] + len + 1);
+		i++;
 	}
+	return (NULL);
 }

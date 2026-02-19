@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 10:54:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/01/13 16:15:51 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 12:06:13 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,23 +43,19 @@ int	builtin_exit(t_command *cmd, t_cleanup *cleanup)
 	int	exit_code;
 
 	printf("exit\n");
-
 	if (!cmd->argv[1])
 		cleanup_and_exit(cleanup, g_exit_status);
-
 	if (!is_numeric_exit(cmd->argv[1]))
 	{
 		printf("minishell: exit: %s: numeric argument required\n",
 			cmd->argv[1]);
 		cleanup_and_exit(cleanup, 255);
 	}
-
 	if (cmd->argv[2])
 	{
 		printf("minishell: exit: too many arguments\n");
 		return (1);
 	}
-
 	exit_code = get_exit_value(cmd->argv[1]);
 	g_exit_status = exit_code;
 	cleanup_and_exit(cleanup, exit_code);

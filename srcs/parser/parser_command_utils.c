@@ -6,67 +6,19 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/16 16:05:41 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 14:02:22 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	redir_add_back(t_redir **lst, t_redir *new)
+int	is_redirection(t_token *token)
 {
-	t_redir	*current;
-
-	if (!lst || !new)
-		return ;
-	if (*lst == NULL)
-	{
-		*lst = new;
-		return ;
-	}
-	current = *lst;
-	while (current->next)
-		current = current->next;
-	current->next = new;
+	return (token->type == TOKEN_REDIR_IN
+		|| token->type == TOKEN_REDIR_OUT
+		|| token->type == TOKEN_REDIR_HEREDOC
+		|| token->type == TOKEN_REDIR_APPEND);
 }
-
-// char	**create_argv(t_token *tokens, int count, int length)
-// {
-// 	char	**argv;
-// 	int		i;
-// 	t_token	*current;
-
-// 	argv = malloc(sizeof(char *) * (count + 1));
-// 	if (!argv)
-// 		return (NULL);
-// 	i = 0;
-// 	current = tokens;
-// 	while (current && i < length)
-// 	{
-// 		if (current->type == TOKEN_LPAREN || current->type == TOKEN_RPAREN)
-// 			return (argv[i] = NULL,
-// 				ft_putstr_fd("minishell: syntax error near unexpected token `('\n",
-// 					2), ft_free_split(argv), NULL);
-// 		if (current->type == TOKEN_REDIR_APPEND
-// 			|| current->type == TOKEN_REDIR_HEREDOC
-// 			|| current->type == TOKEN_REDIR_IN
-// 			|| current->type == TOKEN_REDIR_OUT)
-// 		{
-// 			current = current->next;
-// 			if (current)
-// 				current = current->next;
-// 			continue ;
-// 		}
-// 		if (current->type == TOKEN_WORD)
-// 		{
-// 			argv[i++] = remove_quote(current->str);
-// 			if (!argv[i - 1])
-// 				return (ft_free_split(argv), NULL);
-// 		}
-// 		current = current->next;
-// 	}
-// 	argv[i] = NULL;
-// 	return (argv);
-// }
 
 int	count_tokens_word(t_token *token, int length)
 {
@@ -79,6 +31,14 @@ int	count_tokens_word(t_token *token, int length)
 	current = token;
 	while (current && i < length)
 	{
+		if (is_redirection(current))
+		{
+			current = current->next;
+			if (current && i++ < length)
+				current = current->next;
+			i++;
+			continue ;
+		}
 		if (current->type == TOKEN_WORD)
 			count++;
 		current = current->next;
@@ -86,46 +46,6 @@ int	count_tokens_word(t_token *token, int length)
 	}
 	return (count);
 }
-
-// t_redir	*parse_redirections(t_token *tokens, int length)
-// {
-// 	t_token	*current;
-// 	t_redir	*redir;
-// 	t_redir	*head_redir;
-
-// 	current = tokens;
-// 	head_redir = NULL;
-// 	while (current && length--)
-// 	{
-// 		if (current->type == TOKEN_REDIR_IN || current->type == TOKEN_REDIR_OUT
-// 			|| current->type == TOKEN_REDIR_HEREDOC
-// 			|| current->type == TOKEN_REDIR_APPEND)
-// 		{
-// 			redir = malloc(sizeof(t_redir));
-// 			if (!redir)
-// 				return (NULL);
-// 			redir->type = token_to_redir_type(current->type);
-// 			if (current->next && current->next->type == TOKEN_WORD)
-// 				redir->file = ft_strdup(current->next->str);
-// 			else if (current->next)
-// 			{
-// 				print_parser_redir_error(current->next);
-// 				return (free(redir), free_redirections(head_redir),
-// 					REDIR_ERROR);
-// 			}
-// 			else // cas où il n'y a pas de token après l'opérateur "ls >"
-// 				return (free(redir), free_redirections(head_redir),
-// 					print_unexpected_token(), REDIR_ERROR);
-// 			redir->next = NULL;
-// 			if (current->type == TOKEN_REDIR_HEREDOC)
-// 				redir->heredoc_content = ft_strdup(current->heredoc_content);
-// 			redir_add_back(&head_redir, redir);
-// 			current = current->next;
-// 		}
-// 		current = current->next;
-// 	}
-// 	return (head_redir);
-// }
 
 void	free_redirections(t_redir *redirections)
 {

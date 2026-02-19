@@ -6,134 +6,93 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/16 15:47:12 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 15:08:31 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		g_exit_status = 0;
+int			g_exit_status = 0;
 
-void	handler_signal(int sig)
+static int	init_shell(char **envp, char ***my_envp, t_cleanup *cleanup)
 {
-	(void)sig;
-	g_exit_status = 130;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	*my_envp = copy_envp(envp);
+	if (!*my_envp)
+		return (1);
+	signal(SIGINT, handler_signal);
+	signal(SIGQUIT, SIG_IGN);
+	cleanup->last_status = 0;
+	return (0);
 }
 
-char	**copy_envp(char **envp)
+static int	handle_empty_line(char *line)
 {
-	int		i;
-	int		count;
-	char	**new_envp;
-
-	count = 0;
-	while (envp[count])
-		count++;
-	new_envp = malloc(sizeof(char *) * (count + 1));
-	if (!new_envp)
-		return (NULL);
-	i = 0;
-	while (i < count)
+	if (line == NULL)
 	{
-		new_envp[i] = ft_strdup(envp[i]);
-		if (!new_envp[i])
+		printf("exit\n");
+		clear_history();
+		return (1);
+	}
+	if (line[0] == '\0')
+	{
+		free(line);
+		return (1);
+	}
+	return (0);
+}
+
+static int	process_input(char *line, char **my_envp, t_cleanup *cleanup)
+{
+	t_token	*token;
+	t_node	*node;
+
+	token = lexer(line);
+	if (!token)
+		return (-1);
+	if (process_heredoc(token) == -1)
+		return (free_tokens(token), -1);
+	expander(token, my_envp);
+	node = parse(token, ft_tokens_size(token));
+	if (!node)
+		return (free_tokens(token), -1);
+	cleanup->line = line;
+	cleanup->ast = node;
+	cleanup->tokens = token;
+	g_exit_status = exec_ast(node, &my_envp, cleanup);
+	free_tokens(token);
+	free_ast(node);
+	return (0);
+}
+
+static void	shell_loop(char **my_envp, t_cleanup *cleanup)
+{
+	char	*line;
+
+	while (1)
+	{
+		line = readline("minishell> ");
+		if (handle_empty_line(line))
 		{
-			while (i > 0)
-				free(new_envp[--i]);
-			free(new_envp);
-			return (NULL);
+			if (!line)
+				break ;
+			continue ;
 		}
-		i++;
+		add_history(line);
+		process_input(line, my_envp, cleanup);
+		free(line);
 	}
-	new_envp[count] = NULL;
-	return (new_envp);
-}
-
-void	free_envp(char **envp)
-{
-	int	i;
-
-	if (!envp)
-		return ;
-	i = 0;
-	while (envp[i])
-	{
-		free(envp[i]);
-		i++;
-	}
-	free(envp);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*line;
-	t_token		*token;
-	t_node		*node;
 	t_cleanup	cleanup;
 	char		**my_envp;
 
 	(void)argc;
 	(void)argv;
-	my_envp = copy_envp(envp);
-	if (!my_envp)
+	if (init_shell(envp, &my_envp, &cleanup))
 		return (1);
-	signal(SIGINT, handler_signal);
-	signal(SIGQUIT, SIG_IGN);
-	cleanup.last_status = 0;
-	while (1)
-	{
-		line = readline("minishell> ");
-		if (line == NULL)
-		{
-			printf("exit\n");
-			clear_history();
-			break ;
-		}
-		else if (line[0] == '\0')
-		{
-			free(line);
-			continue ;
-		}
-		add_history(line);
-		token = lexer(line);
-		if (!token)
-		{
-			free(line);
-			continue ;
-		}
-		if (process_heredoc(token) == -1)
-		{
-			free(line);
-			free_tokens(token);
-			continue ;
-		}
-		expander(token, my_envp);
-		node = parse(token, ft_tokens_size(token));
-		if (!node)
-		{
-			free(line);
-			free_tokens(token);
-			continue ;
-		}
-		cleanup.line = line;
-		cleanup.ast = node;
-		cleanup.tokens = token;
-		g_exit_status = exec_ast(node, &my_envp, &cleanup);
-		if (g_exit_status == -1)
-		{
-			free(line);
-			free_tokens(token);
-			free_ast(node);
-			continue ;
-		}
-		free(line);
-		free_tokens(token);
-		free_ast(node);
-	}
+	shell_loop(my_envp, &cleanup);
 	free_envp(my_envp);
 	return (0);
 }

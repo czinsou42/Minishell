@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_command_utils2.c                            :+:      :+:    :+:   */
+/*   parser_create_argv.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/16 16:03:50 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 14:01:43 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,20 @@ static int	is_invalid_token(t_token *current)
 	return (0);
 }
 
-static t_token	*skip_redirection(t_token *current)
+static t_token	*skip_redirection(t_token *current, int *token_index,
+		int length)
 {
 	if (current->type == TOKEN_REDIR_APPEND
 		|| current->type == TOKEN_REDIR_HEREDOC
 		|| current->type == TOKEN_REDIR_IN || current->type == TOKEN_REDIR_OUT)
 	{
+		(*token_index)++;
 		current = current->next;
-		if (current)
+		if (current && *token_index < length)
+		{
+			(*token_index)++;
 			current = current->next;
+		}
 	}
 	return (current);
 }
@@ -50,19 +55,26 @@ static int	add_word(char **argv, int *i, t_token *current)
 static int	fill_argv(char **argv, t_token *tokens, int length)
 {
 	int		i;
+	int		token_index;
 	t_token	*current;
 
 	i = 0;
+	token_index = 0;
 	current = tokens;
-	while (current && i < length)
+	while (current && token_index < length)
 	{
 		if (is_invalid_token(current))
 			return (-1);
-		current = skip_redirection(current);
+		if (is_redirection(current))
+		{
+			current = skip_redirection(current, &token_index, length);
+			continue ;
+		}
 		if (!current)
 			break ;
 		if (add_word(argv, &i, current))
 			return (-1);
+		token_index++;
 		current = current->next;
 	}
 	argv[i] = NULL;

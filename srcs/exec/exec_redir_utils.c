@@ -91,5 +91,4 @@ void	apply_heredoc(t_redir *redir)
 		exit(1);
 	}
 	close(pipe_fd[0]);
-	printf("apply heredoc");
 }

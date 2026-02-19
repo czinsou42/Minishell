@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 15:19:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/01/13 15:45:19 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/19 12:48:46 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,15 @@ int	is_parent_builtin(const char *cmd)
 {
 	if (!cmd)
 		return (0);
-	return (ft_strcmp(cmd, "cd") == 0 || ft_strcmp(cmd, "export") == 0
-		|| ft_strcmp(cmd, "unset") == 0 || ft_strcmp(cmd, "exit") == 0);
+	if (ft_strcmp(cmd, "cd") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "export") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "unset") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "exit") == 0)
+		return (1);
+	return (0);
 }
 
 int	execute_builtin_simple(t_command *cmd, char ***envp)
