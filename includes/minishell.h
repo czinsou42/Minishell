@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 15:04:40 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/20 17:39:47 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ int						is_valid_var_char(char c);
 t_node					*create_node(t_node_type type, t_command *command);
 int						count_nodes(t_node *node);
 void					print_ast(t_node *node, int depth);
-void					free_ast(t_node *node);
+void					free_ast(t_node *node, int free_cmd);
 void					free_redirections(t_redir *redirections);
 t_node					*parse(t_token *tokens, int length);
 t_command				*parse_command(t_token *tokens, int length);
@@ -236,5 +236,8 @@ int						is_redirection(t_token *token);
 char					**copy_envp(char **envp);
 void					handler_signal(int sig);
 void					free_envp(char **envp);
+void    free_pipeline(t_pipeline *p);
+void    free_command(t_command *cmd);
+int	is_simple_builtin(const char *cmd);
 
 #endif

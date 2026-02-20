@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 15:00:21 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/19 15:08:44 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/20 17:43:48 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,34 @@ void	free_envp(char **envp)
 		i++;
 	}
 	free(envp);
+}
+void free_command(t_command *cmd)
+{
+    int i = 0;
+    if (!cmd)
+        return;
+    if (cmd->argv)
+    {
+        while (cmd->argv[i])
+            free(cmd->argv[i++]);
+        free(cmd->argv);
+    }
+    free_redirections(cmd->redirections); // si tu as des redirections
+    free(cmd);
+}
+
+void    free_pipeline(t_pipeline *p)
+{
+    t_pipeline *tmp;
+
+    while (p)
+    {
+        tmp = p->next;
+
+        if (p->cmd)
+            free_command(p->cmd);
+
+        free(p);
+        p = tmp;
+    }
 }

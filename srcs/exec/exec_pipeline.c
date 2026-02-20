@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 16:57:07 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 13:19:27 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/20 17:28:55 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,31 +73,79 @@ static pid_t	fork_pipeline_child(t_pipeline *pipeline, int prev_fd,
 	return (pid);
 }
 
-int	exec_pipeline(t_node *node, char ***envp, t_cleanup *cleanup)
-{
-	t_pipeline	*pipeline;
-	int			prev_fd;
-	int			pipefd[2];
-	pid_t		pid;
+// int	exec_pipeline(t_node *node, char ***envp, t_cleanup *cleanup)
+// {
+// 	t_pipeline	*pipeline;
+// 	int			prev_fd;
+// 	int			pipefd[2];
+// 	pid_t		pid;
 
-	setup_signals();
-	pipeline = extract_cmd(node);
-	prev_fd = -1;
-	(void)cleanup;
-	while (pipeline)
-	{
-		if (pipeline->next && pipe(pipefd) == -1)
-			return (perror("pipe"), 1);
-		pid = fork_pipeline_child(pipeline, prev_fd, pipefd, envp);
-		if (pid == -1)
-			return (1);
-		if (pipeline->next)
-			prev_fd = pipefd[0];
-		else
-			prev_fd = -1;
-		pipeline = pipeline->next;
-	}
-	if (prev_fd != -1)
-		close(prev_fd);
-	return (wait_all(pid), g_exit_status);
+// 	setup_signals();
+// 	pipeline = extract_cmd(node);
+// 	prev_fd = -1;
+// 	(void)cleanup;
+// 	while (pipeline)
+// 	{
+// 		if (pipeline->next && pipe(pipefd) == -1)
+// 			return (perror("pipe"), 1);
+// 		pid = fork_pipeline_child(pipeline, prev_fd, pipefd, envp);
+// 		if (pid == -1)
+// 			return (1);
+// 		if (pipeline->next)
+// 			prev_fd = pipefd[0];
+// 		else
+// 			prev_fd = -1;
+// 		pipeline = pipeline->next;
+// 	}
+// 	if (prev_fd != -1)
+// 		close(prev_fd);
+// 	return (wait_all(pid), g_exit_status);
+// }
+
+int exec_pipeline(t_node *node, char ***envp, t_cleanup *cleanup)
+{
+    t_pipeline  *pipeline;
+    t_pipeline  *head;
+    int         prev_fd;
+    int         pipefd[2];
+    pid_t       pid;
+
+    setup_signals();
+    pipeline = extract_cmd(node);
+    head = pipeline; // 🔥 on sauvegarde le début
+
+    prev_fd = -1;
+    (void)cleanup;
+
+    while (pipeline)
+    {
+        if (pipeline->next && pipe(pipefd) == -1)
+        {
+            free_pipeline(head);
+            return (perror("pipe"), 1);
+        }
+
+        pid = fork_pipeline_child(pipeline, prev_fd, pipefd, envp);
+        if (pid == -1)
+        {
+            free_pipeline(head);
+            return (1);
+        }
+
+        if (pipeline->next)
+            prev_fd = pipefd[0];
+        else
+            prev_fd = -1;
+
+        pipeline = pipeline->next;
+    }
+
+    if (prev_fd != -1)
+        close(prev_fd);
+
+    wait_all(pid);
+
+    free_pipeline(head); // 🔥 LIBÉRATION ICI
+
+    return (g_exit_status);
 }

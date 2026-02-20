@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 16:12:01 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 13:27:41 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/20 17:38:42 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,6 @@ t_node	*handle_operator_parser(t_token *tokens, int length,
 	node->right = parse(advance_token(tokens, operator_info.position + 1),
 			length - operator_info.position - 1);
 	if (node->left == NULL || node->right == NULL)
-		return (free_ast(node), NULL);
+		return (free_ast(node, 1), NULL);
 	return (node);
 }

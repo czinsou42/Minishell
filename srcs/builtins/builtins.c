@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 15:19:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/19 12:48:46 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/20 17:32:31 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,6 @@ int	execute_builtin_simple(t_command *cmd, char ***envp)
 		return (builtin_pwd(cmd));
 	if (ft_strcmp(cmd->argv[0], "env") == 0)
 		return (builtin_env(cmd, *envp));
-	if (ft_strcmp(cmd->argv[0], "cd") == 0)
-		return (builtin_cd(cmd, envp));
-	if (ft_strcmp(cmd->argv[0], "export") == 0)
-		return (builtin_export(cmd, envp));
-	if (ft_strcmp(cmd->argv[0], "unset") == 0)
-		return (builtin_unset(cmd, envp));
-	if (ft_strcmp(cmd->argv[0], "exit") == 0)
-		return (builtin_exit(cmd, NULL));
 	return (1);
 }
 

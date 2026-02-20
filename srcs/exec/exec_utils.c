@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/16 15:39:16 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/20 17:39:13 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,6 @@ void	cleanup_and_exit(t_cleanup *cleanup, int status)
 {
 	free(cleanup->line);
 	free_tokens(cleanup->tokens);
-	free_ast(cleanup->ast);
+	free_ast(cleanup->ast, 1);
 	exit(status);
 }

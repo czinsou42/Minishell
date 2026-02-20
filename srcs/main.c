@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 15:08:31 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/20 17:38:27 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static int	process_input(char *line, char **my_envp, t_cleanup *cleanup)
 	cleanup->tokens = token;
 	g_exit_status = exec_ast(node, &my_envp, cleanup);
 	free_tokens(token);
-	free_ast(node);
+	free_ast(node, 0);
 	return (0);
 }
 
