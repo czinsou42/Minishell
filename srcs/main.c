@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 15:35:00 by root             ###   ########.fr       */
+/*   Updated: 2026/02/22 18:07:55 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static int	process_input(char *line, char **my_envp, t_cleanup *cleanup)
 	cleanup->ast = node;
 	cleanup->tokens = token;
 	cleanup->pipeline = NULL;
+	cleanup->head_pipeline = NULL;
 	cleanup->envp = my_envp;
 	g_exit_status = exec_ast(node, &my_envp, cleanup);
 	free_tokens(cleanup->tokens);

@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 17:02:49 by root             ###   ########.fr       */
+/*   Updated: 2026/02/22 18:53:17 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,44 +32,51 @@ int	get_exit_code(int status)
 	return (-1);
 }
 
-// void	cleanup_and_exit(t_cleanup *cleanup, int status)
-// {
-// 	if (cleanup->line)
-// 		free(cleanup->line);
-// 	if (cleanup->envp)
-// 		free_envp(cleanup->envp);
-// 	if (cleanup->pipeline)
-//         free_pipeline(cleanup->pipeline);
-//     if (cleanup->tokens)
-//         free_tokens(cleanup->tokens);
-//     if (cleanup->ast)
-//         free_ast(cleanup->ast);
-//     exit(status);
-// }
-
-void cleanup_and_exit(t_cleanup *cleanup, int status)
+void	cleanup_and_exit(t_cleanup *cleanup, int status)
 {
 	t_pipeline	*tmp;
-	 
-    if (cleanup->line)
-        free(cleanup->line);
-
-    if (cleanup->envp)
-        free_envp(cleanup->envp);
-    if (cleanup->pipeline)
+	
+	if (cleanup->line)
+		free(cleanup->line);
+	if (cleanup->envp)
+		free_envp(cleanup->envp);
+	if (cleanup->head_pipeline)
     {
-        while (cleanup->pipeline)
+		while (cleanup->head_pipeline)
         {
-            tmp = cleanup->pipeline->next;
-            free(cleanup->pipeline);
-            cleanup->pipeline = tmp;
-        }
+			tmp = cleanup->head_pipeline->next;
+			free(cleanup->head_pipeline);
+			cleanup->head_pipeline = tmp;
+		}
 		cleanup->pipeline = NULL;
-		
-    }
-    if (cleanup->tokens)
-        free_tokens(cleanup->tokens);
-    if (cleanup->ast)
-        free_ast(cleanup->ast);
-    exit(status);
+		cleanup->head_pipeline = NULL;
+	}
+	if (cleanup->tokens)
+		free_tokens(cleanup->tokens);
+	if (cleanup->ast)
+		free_ast(cleanup->ast);
+	exit(status);
+}
+
+void	setup_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	setup_child_pipe(int prev_fd, int *pipefd, int has_next)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_IGN);
+	if (prev_fd != -1)
+	{
+		dup2(prev_fd, STDIN_FILENO);
+		close(prev_fd);
+	}
+	if (has_next)
+	{
+		close(pipefd[0]);
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
+	}
 }

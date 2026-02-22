@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 15:30:08 by root             ###   ########.fr       */
+/*   Updated: 2026/02/22 18:46:34 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ typedef struct s_cleanup
 	char				*line;
 	t_token				*tokens;
 	t_pipeline			*pipeline;
+	t_pipeline			*head_pipeline;
 	t_node				*ast;
 	int					last_status;
 	char				**envp;
@@ -144,8 +145,6 @@ t_quote_type			get_quote_type(char *line, int *i, char *quote_char);
 int						process_heredoc(t_token *tokens);
 void					expander(t_token *tokens, char **envp);
 char					*expand(t_expand_tokens *tokens);
-
-// UTILS
 int						get_var_len(char *str, int *i, char **envp);
 int						expanded_len(char *str, char **envp);
 int						copy_var_value(t_expand_tokens *tokens, int *i, int k);
@@ -174,8 +173,6 @@ t_node					*handle_operator_parser(t_token *tokens, int length,
 							t_operator_info operator_info);
 t_node					*create_command_node(t_token *tokens, int length);
 void					print_syntax_error(char *token);
-
-// TOKENS
 int						ft_tokens_size(t_token *lst);
 int						count_tokens_word(t_token *token, int length);
 t_redir_type			token_to_redir_type(t_token_type type);
@@ -189,7 +186,6 @@ int						exec_command(t_command *cmd, char ***envp,
 int						exec_or(t_node *node, char ***envp, t_cleanup *cleanup);
 int						exec_and(t_node *node, char ***envp,
 							t_cleanup *cleanup);
-
 char					*get_path(char *cmd, char **envp);
 char					*find_path_in_env(char **envp);
 char					*try_path(char **paths, char *cmd);
@@ -238,8 +234,9 @@ int						is_redirection(t_token *token);
 char					**copy_envp(char **envp);
 void					handler_signal(int sig);
 void					free_envp(char **envp);
-void    free_pipeline(t_pipeline *p);
-void    free_command(t_command *cmd);
-int	is_simple_builtin(const char *cmd);
+void					free_pipeline(t_pipeline *p);
+int						is_simple_builtin(const char *cmd);
+void					setup_signals(void);
+void					setup_child_pipe(int prev_fd, int *pipefd, int has_next);
 
 #endif

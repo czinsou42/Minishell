@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 15:00:21 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/22 16:29:28 by root             ###   ########.fr       */
+/*   Updated: 2026/02/22 18:48:22 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,29 +65,15 @@ void	free_envp(char **envp)
 	}
 	free(envp);
 }
-void free_command(t_command *cmd)
-{
-    int i = 0;
-    if (!cmd)
-        return;
-    if (cmd->argv)
-    {
-        while (cmd->argv[i])
-            free(cmd->argv[i++]);
-        free(cmd->argv);
-    }
-    free_redirections(cmd->redirections);
-    free(cmd);
-}
 
-void    free_pipeline(t_pipeline *p)
+void	free_pipeline(t_pipeline *p)
 {
-    t_pipeline *tmp;
+	t_pipeline	*tmp;
 
-    while (p)
+	while (p)
     {
-        tmp = p->next;	
-        free(p);
-        p = tmp;
-    }
+		tmp = p->next;
+		free(p);
+		p = tmp;
+	}
 }

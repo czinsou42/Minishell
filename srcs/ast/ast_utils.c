@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 11:22:37 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 14:54:38 by root             ###   ########.fr       */
+/*   Updated: 2026/02/22 18:12:40 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,3 @@ void	free_ast(t_node *node)
 	}
 	free(node);
 }
-
-// void free_ast(t_node *node, int free_commands)
-// {
-//     if (!node)
-//         return;
-//     free_ast(node->left, free_commands);
-//     free_ast(node->right, free_commands);
-//     if (node->type == NODE_COMMAND && free_commands)
-//         free_command(node->command);
-//     free(node);
-// }
