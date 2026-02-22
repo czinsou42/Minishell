@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_command.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/20 17:34:13 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/22 13:33:11 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	{
 		apply_redirections(cmd->redirections);
 		if (execute_builtin_parent(cmd, envp, cleanup) == 0)
-			exit(0);
+			cleanup_and_exit(cleanup, 0);
 		path = get_path(cmd->argv[0], *envp);
 		if (!path)
 			(print_command_error(cmd->argv[0], 127), cleanup_and_exit(cleanup,
@@ -71,19 +71,6 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	}
 	return (waitpid(pid, &status, 0), get_exit_code(status));
 }
-
-// int	execute_builtin_simple(t_command *cmd, char ***envp)
-// {
-// 	if (!cmd || !cmd->argv || !cmd->argv[0])
-// 		return (1);
-// 	if (ft_strcmp(cmd->argv[0], "echo") == 0)
-// 		return (builtin_echo(cmd));
-// 	if (ft_strcmp(cmd->argv[0], "pwd") == 0)
-// 		return (builtin_pwd(cmd));
-// 	if (ft_strcmp(cmd->argv[0], "env") == 0)
-// 		return (builtin_env(cmd, *envp));
-// 	return (1);
-// }
 
 int	is_simple_builtin(const char *cmd)
 {

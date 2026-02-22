@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/20 17:39:13 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/22 17:02:49 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,44 @@ int	get_exit_code(int status)
 	return (-1);
 }
 
-void	cleanup_and_exit(t_cleanup *cleanup, int status)
+// void	cleanup_and_exit(t_cleanup *cleanup, int status)
+// {
+// 	if (cleanup->line)
+// 		free(cleanup->line);
+// 	if (cleanup->envp)
+// 		free_envp(cleanup->envp);
+// 	if (cleanup->pipeline)
+//         free_pipeline(cleanup->pipeline);
+//     if (cleanup->tokens)
+//         free_tokens(cleanup->tokens);
+//     if (cleanup->ast)
+//         free_ast(cleanup->ast);
+//     exit(status);
+// }
+
+void cleanup_and_exit(t_cleanup *cleanup, int status)
 {
-	free(cleanup->line);
-	free_tokens(cleanup->tokens);
-	free_ast(cleanup->ast, 1);
-	exit(status);
+	t_pipeline	*tmp;
+	 
+    if (cleanup->line)
+        free(cleanup->line);
+
+    if (cleanup->envp)
+        free_envp(cleanup->envp);
+    if (cleanup->pipeline)
+    {
+        while (cleanup->pipeline)
+        {
+            tmp = cleanup->pipeline->next;
+            free(cleanup->pipeline);
+            cleanup->pipeline = tmp;
+        }
+		cleanup->pipeline = NULL;
+		
+    }
+    if (cleanup->tokens)
+        free_tokens(cleanup->tokens);
+    if (cleanup->ast)
+        free_ast(cleanup->ast);
+    exit(status);
 }

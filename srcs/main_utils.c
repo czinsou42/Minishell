@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 15:00:21 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/20 17:43:48 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/22 16:29:28 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void free_command(t_command *cmd)
             free(cmd->argv[i++]);
         free(cmd->argv);
     }
-    free_redirections(cmd->redirections); // si tu as des redirections
+    free_redirections(cmd->redirections);
     free(cmd);
 }
 
@@ -86,11 +86,7 @@ void    free_pipeline(t_pipeline *p)
 
     while (p)
     {
-        tmp = p->next;
-
-        if (p->cmd)
-            free_command(p->cmd);
-
+        tmp = p->next;	
         free(p);
         p = tmp;
     }

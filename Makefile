@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+         #
+#    By: root <root@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2026/02/19 15:06:00 by czinsou          ###   ########.fr        #
+#    Updated: 2026/02/22 13:37:56 by root             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,7 +68,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(OBJS) $(LIBFT) -lreadline -o $(NAME)
+	$(CC) $(OBJS) $(LIBFT) -lreadline -no-pie -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -I includes -I $(LIBFT_DIR) -c $< -o $@

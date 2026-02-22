@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 11:22:37 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/20 17:42:35 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/22 14:54:38 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,32 +41,32 @@ void	print_ast(t_node *node, int depth)
 	print_ast(node->right, depth + 1);
 }
 
-// void	free_ast(t_node *node)
-// {
-// 	if (node == NULL)
-// 		return ;
-// 	free_ast(node->left);
-// 	free_ast(node->right);
-// 	if (node->command)
-// 	{
-// 		if (node->command->argv)
-// 			ft_free_split(node->command->argv);
-// 		if (node->command->redirections)
-// 		{
-// 			free_redirections(node->command->redirections);
-// 		}
-// 		free(node->command);
-// 	}
-// 	free(node);
-// }
-
-void free_ast(t_node *node, int free_commands)
+void	free_ast(t_node *node)
 {
-    if (!node)
-        return;
-    free_ast(node->left, free_commands);
-    free_ast(node->right, free_commands);
-    if (node->type == NODE_COMMAND && free_commands)
-        free_command(node->command);
-    free(node);
+	if (node == NULL)
+		return ;
+	free_ast(node->left);
+	free_ast(node->right);
+	if (node->command)
+	{
+		if (node->command->argv)
+			ft_free_split(node->command->argv);
+		if (node->command->redirections)
+		{
+			free_redirections(node->command->redirections);
+		}
+		free(node->command);
+	}
+	free(node);
 }
+
+// void free_ast(t_node *node, int free_commands)
+// {
+//     if (!node)
+//         return;
+//     free_ast(node->left, free_commands);
+//     free_ast(node->right, free_commands);
+//     if (node->type == NODE_COMMAND && free_commands)
+//         free_command(node->command);
+//     free(node);
+// }

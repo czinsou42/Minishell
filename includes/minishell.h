@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/20 17:39:47 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/22 15:30:08 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,10 @@ typedef struct s_cleanup
 {
 	char				*line;
 	t_token				*tokens;
+	t_pipeline			*pipeline;
 	t_node				*ast;
 	int					last_status;
+	char				**envp;
 }						t_cleanup;
 
 typedef struct s_expand_tokens
@@ -153,7 +155,7 @@ int						is_valid_var_char(char c);
 t_node					*create_node(t_node_type type, t_command *command);
 int						count_nodes(t_node *node);
 void					print_ast(t_node *node, int depth);
-void					free_ast(t_node *node, int free_cmd);
+void					free_ast(t_node *node);
 void					free_redirections(t_redir *redirections);
 t_node					*parse(t_token *tokens, int length);
 t_command				*parse_command(t_token *tokens, int length);
