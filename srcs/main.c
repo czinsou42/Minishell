@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 18:07:55 by root             ###   ########.fr       */
+/*   Updated: 2026/02/22 22:52:29 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	handle_empty_line(char *line)
 	return (0);
 }
 
-static int	process_input(char *line, char **my_envp, t_cleanup *cleanup)
+static int	process_input(char *line, char ***my_envp, t_cleanup *cleanup)
 {
 	t_token	*token;
 	t_node	*node;
@@ -51,7 +51,7 @@ static int	process_input(char *line, char **my_envp, t_cleanup *cleanup)
 		return (-1);
 	if (process_heredoc(token) == -1)
 		return (free_tokens(token), -1);
-	expander(token, my_envp);
+	expander(token, *my_envp);
 	node = parse(token, ft_tokens_size(token));
 	if (!node)
 		return (free_tokens(token), -1);
@@ -60,8 +60,8 @@ static int	process_input(char *line, char **my_envp, t_cleanup *cleanup)
 	cleanup->tokens = token;
 	cleanup->pipeline = NULL;
 	cleanup->head_pipeline = NULL;
-	cleanup->envp = my_envp;
-	g_exit_status = exec_ast(node, &my_envp, cleanup);
+	// cleanup->envp = my_envp;
+	g_exit_status = exec_ast(node, my_envp, cleanup);
 	free_tokens(cleanup->tokens);
 	cleanup->tokens = NULL;
 	free_ast(cleanup->ast);
@@ -69,7 +69,7 @@ static int	process_input(char *line, char **my_envp, t_cleanup *cleanup)
 	return (0);
 }
 
-static void	shell_loop(char **my_envp, t_cleanup *cleanup)
+static void	shell_loop(char ***my_envp, t_cleanup *cleanup)
 {
 	char	*line;
 
@@ -97,7 +97,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	if (init_shell(envp, &my_envp, &cleanup))
 		return (1);
-	shell_loop(my_envp, &cleanup);
+	shell_loop(&my_envp, &cleanup);
 	free_envp(my_envp);
 	return (0);
 }

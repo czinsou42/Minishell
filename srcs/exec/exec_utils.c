@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 18:53:17 by root             ###   ########.fr       */
+/*   Updated: 2026/02/23 00:54:24 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ void	cleanup_and_exit(t_cleanup *cleanup, int status)
 	
 	if (cleanup->line)
 		free(cleanup->line);
-	if (cleanup->envp)
-		free_envp(cleanup->envp);
 	if (cleanup->head_pipeline)
     {
 		while (cleanup->head_pipeline)

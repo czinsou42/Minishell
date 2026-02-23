@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 16:57:07 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 18:54:39 by root             ###   ########.fr       */
+/*   Updated: 2026/02/22 23:32:03 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,27 @@ static void	execute_pipeline_cmd(t_command *cmd, t_cleanup *cleanup,
 			 char ***envp)
 {
 	char	*path;
+	char	**env;
 
 	apply_redirections(cmd->redirections);
 	if (execute_builtin_simple(cmd, envp) == 0)
+	{
+		free_envp(*envp);
 		cleanup_and_exit(cleanup, 0);
-	path = get_path(cmd->argv[0], *envp);
+	}
+	env = *envp;
+	path = get_path(cmd->argv[0], env);
 	if (!path)
 	{
 		print_command_error(cmd->argv[0], 127);
+		free_envp(env);
 		cleanup_and_exit (cleanup, 127);
 	}
-	execve(path, cmd->argv, *envp);
+	execve(path, cmd->argv, env);
+	free(path);
+	free_envp(env);
 	print_command_error(cmd->argv[0], 126);
 	cleanup_and_exit(cleanup, 126);
-	free_pipeline(cleanup->pipeline);
 }
 
 static pid_t	fork_pipeline_child(t_cleanup *cleanup, int prev_fd,

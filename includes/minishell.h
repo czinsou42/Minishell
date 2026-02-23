@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 18:46:34 by root             ###   ########.fr       */
+/*   Updated: 2026/02/23 01:03:43 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ typedef struct s_cleanup
 	t_pipeline			*head_pipeline;
 	t_node				*ast;
 	int					last_status;
-	char				**envp;
+	// char				**envp;
 }						t_cleanup;
 
 typedef struct s_expand_tokens
@@ -207,7 +207,7 @@ int						builtin_pwd(t_command *cmd);
 int						builtin_env(t_command *cmd, char **envp);
 int						builtin_export(t_command *cmd, char ***env);
 int						builtin_unset(t_command *cmd, char ***env);
-int						builtin_exit(t_command *cmd, t_cleanup *cleanup);
+int						builtin_exit(t_command *cmd, char ***envp, t_cleanup *cleanup);
 int						is_numeric_exit(const char *str);
 int						get_exit_value(const char *str);
 void					cleanup_and_exit(t_cleanup *cleanup, int status);

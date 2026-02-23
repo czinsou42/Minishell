@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 14:34:05 by czinsou           #+#    #+#             */
-/*   Updated: 2025/12/22 17:03:27 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/22 22:41:12 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,11 +99,11 @@ int	env_add(char ***envp, char *name, char *value)
 		count++;
 	new_envp = malloc(sizeof(char *) * (count + 2));
 	if (!new_envp)
-		return (free (new_envp), 1);
+		return (free(new_envp), 1);
 	i = 0;
 	while (i < count)
 	{
-		new_envp[i] = (*envp)[i];
+		new_envp[i] = ft_strdup((*envp)[i]);
 		i++;
 	}
 	new_var = ft_strjoin3(name, "=", value);
@@ -111,7 +111,7 @@ int	env_add(char ***envp, char *name, char *value)
 		return (free(new_envp), 1);
 	new_envp[count] = new_var;
 	new_envp[count + 1] = NULL;
-	free(*envp);
+	free_envp(*envp);
 	*envp = new_envp;
 	return (0);
 }

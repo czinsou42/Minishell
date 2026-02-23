@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 15:19:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/22 18:19:23 by root             ###   ########.fr       */
+/*   Updated: 2026/02/23 01:02:59 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	execute_builtin_parent(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	if (ft_strcmp(cmd->argv[0], "unset") == 0)
 		return (builtin_unset(cmd, envp));
 	if (ft_strcmp(cmd->argv[0], "exit") == 0)
-		return (builtin_exit(cmd, cleanup));
+		return (builtin_exit(cmd, envp, cleanup));
 	return (-1);
 }
 

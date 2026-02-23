@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:54:51 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 14:21:02 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/22 23:53:09 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,11 @@ int	expanded_len(char *str, char **envp)
 	total_len = 0;
 	while (str[++i])
 	{
+		if (str[i] == '\\' && str[i + 1] == '$')
+		{
+			total_len++;
+			i++;
+		}
 		if (str[i] == '$' && is_valid_var_char(str[i + 1]))
 		{
 			len = get_var_len(str, &i, envp);
