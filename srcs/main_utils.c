@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 15:00:21 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/22 18:48:22 by root             ###   ########.fr       */
+/*   Updated: 2026/02/23 14:24:50 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	free_pipeline(t_pipeline *p)
 	t_pipeline	*tmp;
 
 	while (p)
-    {
+	{
 		tmp = p->next;
 		free(p);
 		p = tmp;

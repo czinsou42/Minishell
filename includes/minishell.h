@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/23 01:03:43 by root             ###   ########.fr       */
+/*   Updated: 2026/02/23 15:02:52 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <dirent.h>
 # include <errno.h>
 # include <fcntl.h>
 # include <libft.h>
@@ -120,7 +121,6 @@ typedef struct s_cleanup
 	t_pipeline			*head_pipeline;
 	t_node				*ast;
 	int					last_status;
-	// char				**envp;
 }						t_cleanup;
 
 typedef struct s_expand_tokens
@@ -207,7 +207,8 @@ int						builtin_pwd(t_command *cmd);
 int						builtin_env(t_command *cmd, char **envp);
 int						builtin_export(t_command *cmd, char ***env);
 int						builtin_unset(t_command *cmd, char ***env);
-int						builtin_exit(t_command *cmd, char ***envp, t_cleanup *cleanup);
+int						builtin_exit(t_command *cmd, char ***envp,
+							t_cleanup *cleanup);
 int						is_numeric_exit(const char *str);
 int						get_exit_value(const char *str);
 void					cleanup_and_exit(t_cleanup *cleanup, int status);
@@ -237,6 +238,8 @@ void					free_envp(char **envp);
 void					free_pipeline(t_pipeline *p);
 int						is_simple_builtin(const char *cmd);
 void					setup_signals(void);
-void					setup_child_pipe(int prev_fd, int *pipefd, int has_next);
+void					setup_child_pipe(int prev_fd, int *pipefd,
+							int has_next);
+void					expand_wildcard_token(t_token *token);
 
 #endif

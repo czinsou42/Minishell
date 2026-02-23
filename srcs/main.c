@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 22:52:29 by root             ###   ########.fr       */
+/*   Updated: 2026/02/23 16:13:44 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static int	init_shell(char **envp, char ***my_envp, t_cleanup *cleanup)
 		return (1);
 	signal(SIGINT, handler_signal);
 	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 	cleanup->last_status = 0;
 	return (0);
 }
@@ -60,7 +61,6 @@ static int	process_input(char *line, char ***my_envp, t_cleanup *cleanup)
 	cleanup->tokens = token;
 	cleanup->pipeline = NULL;
 	cleanup->head_pipeline = NULL;
-	// cleanup->envp = my_envp;
 	g_exit_status = exec_ast(node, my_envp, cleanup);
 	free_tokens(cleanup->tokens);
 	cleanup->tokens = NULL;

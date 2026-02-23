@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipeline_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 18:20:25 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 18:54:06 by root             ###   ########.fr       */
+/*   Updated: 2026/02/23 14:27:22 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_pipeline	*extract_cmd(t_node *node)
 	left_list = extract_cmd(node->left);
 	right_list = extract_cmd(node->right);
 	if (!left_list)
-		return right_list;
+		return (right_list);
 	list = left_list;
 	if (right_list)
 		pipeline_add_back(&list, right_list);

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: root <root@student.42.fr>                  +#+  +:+       +#+         #
+#    By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2026/02/22 13:37:56 by root             ###   ########.fr        #
+#    Updated: 2026/02/23 15:18:25 by czinsou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,8 @@ PARSER_SRCS = srcs/parser/parser.c \
 
 EXPAND_SRCS = srcs/expander/expand.c \
 			srcs/expander/expand_utils.c \
-			srcs/expander/expand_utils2.c 
+			srcs/expander/expand_utils2.c \
+			srcs/expander/expand_wildcard.c \
 
 EXEC_SRCS = srcs/exec/exec_and.c \
 			srcs/exec/exec_command.c \
@@ -68,7 +69,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(OBJS) $(LIBFT) -lreadline -no-pie -o $(NAME)
+	$(CC) $(OBJS) $(LIBFT) -lreadline -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -I includes -I $(LIBFT_DIR) -c $< -o $@

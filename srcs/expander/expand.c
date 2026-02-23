@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:28:47 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 14:55:56 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/02/23 16:22:59 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,15 @@ static void	expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
 	if (!expanded_str)
 		return ;
 	expand_heredoc_content(expand_tokens, tokens);
+	if (tokens->type == TOKEN_REDIR_HEREDOC)
+	{
+		free(expanded_str);
+		return ;
+	}
 	free(tokens->str);
 	tokens->str = expanded_str;
+	if (tokens->quote == NO_QUOTE && ft_strchr(tokens->str, '*'))
+		expand_wildcard_token(tokens);
 }
 
 void	expander(t_token *tokens, char **envp)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/23 00:54:24 by root             ###   ########.fr       */
+/*   Updated: 2026/02/23 16:15:18 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ int	get_exit_code(int status)
 void	cleanup_and_exit(t_cleanup *cleanup, int status)
 {
 	t_pipeline	*tmp;
-	
+
 	if (cleanup->line)
 		free(cleanup->line);
 	if (cleanup->head_pipeline)
-    {
+	{
 		while (cleanup->head_pipeline)
-        {
+		{
 			tmp = cleanup->head_pipeline->next;
 			free(cleanup->head_pipeline);
 			cleanup->head_pipeline = tmp;
@@ -65,7 +65,7 @@ void	setup_signals(void)
 void	setup_child_pipe(int prev_fd, int *pipefd, int has_next)
 {
 	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, SIG_DFL);
 	if (prev_fd != -1)
 	{
 		dup2(prev_fd, STDIN_FILENO);
