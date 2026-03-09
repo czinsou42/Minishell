@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 14:01:43 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/09 16:28:25 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,17 @@ static int	fill_argv(char **argv, t_token *tokens, int length)
 char	**create_argv(t_token *tokens, int count, int length)
 {
 	char	**argv;
+	int		i;
 
 	argv = malloc(sizeof(char *) * (count + 1));
 	if (!argv)
 		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		argv[i] = NULL;
+		i++;
+	}
 	if (fill_argv(argv, tokens, length) == -1)
 	{
 		ft_free_split(argv);

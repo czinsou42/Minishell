@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/23 15:15:23 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/23 16:27:15 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/09 16:08:38 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,15 @@ static int	collect_matches(DIR *dir, char *pattern, t_token *token)
 	matched = 0;
 	last = token;
 	entry = readdir(dir);
-	while ((entry) != NULL)
+	while (entry != NULL)
 	{
-		if (entry->d_name[0] == '.' || !match_wildcard(entry->d_name, pattern))
-			continue ;
-		if (add_match(token, entry->d_name, matched, &last) == -1)
-			break ;
-		matched++;
+		if (entry->d_name[0] != '.' && match_wildcard(entry->d_name, pattern))
+		{
+			if (add_match(token, entry->d_name, matched, &last) == -1)
+				break ;
+			matched++;
+		}
+		entry = readdir(dir);
 	}
 	return (matched);
 }

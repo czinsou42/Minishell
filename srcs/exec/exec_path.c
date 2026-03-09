@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:35:38 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/16 15:20:16 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/09 16:40:26 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	*get_path(char *cmd, char **envp)
 	char	*path;
 	char	**paths;
 
+	if (!cmd || !*cmd)
+		return (NULL);
 	if (ft_strchr(cmd, '/'))
 	{
 		if (access(cmd, X_OK) != -1)
@@ -35,7 +37,7 @@ char	*get_path(char *cmd, char **envp)
 
 char	*find_path_in_env(char **envp)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (envp[i])

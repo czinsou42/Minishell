@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 13:30:27 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/09 16:51:26 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,22 @@ static char	*read_heredoc_content(char *delimiter)
 
 int	process_heredoc(t_token *tokens)
 {
-	t_token		*current;
-	char		*delimiter;
-	char		*content;
+	t_token	*current;
+	char	*delimiter;
+	char	*content;
 
 	current = tokens;
 	while (current)
 	{
-		if (current->type == TOKEN_REDIR_HEREDOC && current->next != NULL)
+		if (current->type == TOKEN_REDIR_HEREDOC)
 		{
+			if (!current->next || current->next->type != TOKEN_WORD)
+			{
+				fprintf(stderr,
+					"minishell: syntax error near unexpected token '%s'\n",
+					current->next ? current->next->str : "newline");
+				return (-1);
+			}
 			delimiter = current->next->str;
 			content = read_heredoc_content(delimiter);
 			if (!content)
