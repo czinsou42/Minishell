@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 18:20:25 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/23 14:27:22 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/10 16:19:02 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,16 @@ void	wait_all(pid_t g_signal)
 	pid_t	pid;
 	int		status;
 
-	while (1)
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	pid = waitpid(-1, &status, 0);
+	while ((pid) > 0)
 	{
-		pid = waitpid(-1, &status, 0);
-		if (pid < 0)
-			break ;
-		if (pid == g_signal)
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+			g_exit_status = 130;
+		else if (pid == g_signal)
 			handle_status(status);
+		pid = waitpid(-1, &status, 0);
 	}
 	signal(SIGINT, handler_signal);
 	signal(SIGQUIT, SIG_IGN);

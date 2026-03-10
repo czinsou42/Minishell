@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 16:57:07 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/09 16:43:00 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/10 16:07:23 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ int	exec_pipeline(t_node *node, char ***envp, t_cleanup *cleanup)
 {
 	int	prev_fd;
 
-	setup_signals();
 	cleanup->pipeline = extract_cmd(node);
 	cleanup->head_pipeline = cleanup->pipeline;
 	run_pipeline_loop(cleanup, &prev_fd, envp);

@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/23 16:13:44 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/10 16:08:04 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,7 @@ static int	init_shell(char **envp, char ***my_envp, t_cleanup *cleanup)
 	*my_envp = copy_envp(envp);
 	if (!*my_envp)
 		return (1);
-	signal(SIGINT, handler_signal);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGTSTP, SIG_IGN);
+	setup_signals();
 	cleanup->last_status = 0;
 	return (0);
 }
@@ -73,6 +71,8 @@ static void	shell_loop(char ***my_envp, t_cleanup *cleanup)
 {
 	char	*line;
 
+	signal(SIGINT, handler_signal);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		line = readline("minishell> ");

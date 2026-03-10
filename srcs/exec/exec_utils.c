@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/23 16:15:18 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/10 16:05:21 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,15 @@ void	cleanup_and_exit(t_cleanup *cleanup, int status)
 		free_tokens(cleanup->tokens);
 	if (cleanup->ast)
 		free_ast(cleanup->ast);
+	clear_history();
 	exit(status);
 }
 
 void	setup_signals(void)
 {
-	signal(SIGINT, SIG_DFL);
+	signal(SIGINT, handler_signal);
 	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }
 
 void	setup_child_pipe(int prev_fd, int *pipefd, int has_next)
