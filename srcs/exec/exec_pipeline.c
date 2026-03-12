@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 16:57:07 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/10 16:07:23 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/12 14:35:34 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static pid_t	fork_pipeline_child(t_cleanup *cleanup, int prev_fd,
 		setup_child_pipe(prev_fd, pipefd, cleanup->pipeline->next != NULL);
 		execute_pipeline_cmd(cleanup->pipeline->cmd, cleanup, envp);
 	}
-	if (cleanup->pipeline->next)
+	if (cleanup->pipeline->next && pipefd)
 		close(pipefd[1]);
 	if (prev_fd != -1)
 		close(prev_fd);
@@ -69,6 +69,8 @@ static void	run_pipeline_loop(t_cleanup *cleanup, int *prev_fd, char ***envp)
 	*prev_fd = -1;
 	while (cleanup->pipeline)
 	{
+		pipefd[0] = -1;
+		pipefd[1] = -1;
 		if (cleanup->pipeline->next && pipe(pipefd) == -1)
 			(perror("pipe"), cleanup_and_exit(cleanup, 1));
 		pid = fork_pipeline_child(cleanup, *prev_fd, pipefd, envp);

@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/10 16:08:04 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/12 14:28:44 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ int	main(int argc, char **argv, char **envp)
 	if (init_shell(envp, &my_envp, &cleanup))
 		return (1);
 	shell_loop(&my_envp, &cleanup);
+	printf("FREE ENV\n");
 	free_envp(my_envp);
 	return (0);
 }

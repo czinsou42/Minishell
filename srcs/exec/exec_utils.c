@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/10 16:05:21 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/12 14:18:06 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	setup_child_pipe(int prev_fd, int *pipefd, int has_next)
 		dup2(prev_fd, STDIN_FILENO);
 		close(prev_fd);
 	}
-	if (has_next)
+	if (has_next && pipefd)
 	{
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
