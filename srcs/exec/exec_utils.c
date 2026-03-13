@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 18:11:15 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/12 14:18:06 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 15:38:02 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,31 +30,6 @@ int	get_exit_code(int status)
 	else if (WIFSIGNALED(status))
 		return (g_exit_status = (128 + WTERMSIG(status)));
 	return (-1);
-}
-
-void	cleanup_and_exit(t_cleanup *cleanup, int status)
-{
-	t_pipeline	*tmp;
-
-	if (cleanup->line)
-		free(cleanup->line);
-	if (cleanup->head_pipeline)
-	{
-		while (cleanup->head_pipeline)
-		{
-			tmp = cleanup->head_pipeline->next;
-			free(cleanup->head_pipeline);
-			cleanup->head_pipeline = tmp;
-		}
-		cleanup->pipeline = NULL;
-		cleanup->head_pipeline = NULL;
-	}
-	if (cleanup->tokens)
-		free_tokens(cleanup->tokens);
-	if (cleanup->ast)
-		free_ast(cleanup->ast);
-	clear_history();
-	exit(status);
 }
 
 void	setup_signals(void)

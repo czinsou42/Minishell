@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:43:20 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/23 15:20:02 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 14:49:46 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,11 @@ char	*ft_getenv(char *name, char **envp)
 		i++;
 	}
 	return (NULL);
+}
+
+int	is_valid_var_char(char c)
+{
+	if (ft_isalpha(c) || c == '_' || c == '?')
+		return (1);
+	return (0);
 }

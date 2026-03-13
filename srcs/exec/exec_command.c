@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/23 16:19:01 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 15:21:58 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	apply_redirections(cmd->redirections);
+	apply_redirections(cmd->redirections, cleanup);
 	path = get_path(cmd->argv[0], *envp);
 	if (!path)
 		(print_command_error(cmd->argv[0], 127), free_envp(*envp),
@@ -65,12 +65,12 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return (0);
 	if (is_parent_builtin(cmd->argv[0]))
-		return (apply_redirections(cmd->redirections),
+		return (apply_redirections(cmd->redirections, cleanup),
 			execute_builtin_parent(cmd, envp, cleanup));
 	if (is_simple_builtin(cmd->argv[0]))
 	{
 		saved_stdout = dup(STDOUT_FILENO);
-		apply_redirections(cmd->redirections);
+		apply_redirections(cmd->redirections, cleanup);
 		ret = execute_builtin_simple(cmd, envp);
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdout);

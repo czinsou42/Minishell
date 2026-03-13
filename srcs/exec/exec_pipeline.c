@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 16:57:07 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/12 14:35:34 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 15:22:06 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	execute_pipeline_cmd(t_command *cmd, t_cleanup *cleanup,
 
 	if (!cmd)
 		return ;
-	apply_redirections(cmd->redirections);
+	apply_redirections(cmd->redirections, cleanup);
 	if (execute_builtin_simple(cmd, envp) == 0)
 	{
 		free_envp(*envp);

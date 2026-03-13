@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 11:24:28 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/19 13:18:30 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 14:28:06 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,11 @@ int	builtin_pwd(t_command *cmd)
 	return (0);
 }
 
-static void	print_echo_arg(char *arg)
+static int	print_echo_arg(char *arg)
 {
-	int	j;
-
-	j = 0;
-	while (arg[j])
-	{
-		if (ft_strncmp(arg + j, "$?", 2) == 0)
-		{
-			printf("%d", g_exit_status);
-			j += 2;
-		}
-		if (arg[j])
-			printf("%c", arg[j++]);
-	}
+	if (write(STDOUT_FILENO, arg, ft_strlen(arg)) == -1)
+		return (-1);
+	return (0);
 }
 
 int	builtin_echo(t_command *cmd)
@@ -57,13 +47,16 @@ int	builtin_echo(t_command *cmd)
 	}
 	while (cmd->argv[i])
 	{
-		print_echo_arg(cmd->argv[i]);
+		if (print_echo_arg(cmd->argv[i]) == -1)
+			return (1);
 		if (cmd->argv[i + 1])
-			printf(" ");
+			if (write(STDOUT_FILENO, " ", 1) == -1)
+				return (1);
 		i++;
 	}
 	if (newline)
-		printf("\n");
+		if (write(STDOUT_FILENO, "\n", 1) == -1)
+			return (1);
 	return (0);
 }
 

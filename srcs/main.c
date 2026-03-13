@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/12 14:28:44 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 16:56:34 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ int			g_exit_status = 0;
 
 static int	init_shell(char **envp, char ***my_envp, t_cleanup *cleanup)
 {
+	init_cleanup(cleanup);
 	*my_envp = copy_envp(envp);
 	if (!*my_envp)
 		return (1);
 	setup_signals();
-	cleanup->last_status = 0;
 	return (0);
 }
 
@@ -45,20 +45,20 @@ static int	process_input(char *line, char ***my_envp, t_cleanup *cleanup)
 	t_token	*token;
 	t_node	*node;
 
+	token = NULL;
+	node = NULL;
 	token = lexer(line);
 	if (!token)
 		return (-1);
-	if (process_heredoc(token) == -1)
-		return (free_tokens(token), -1);
+	if (process_heredoc(token, cleanup) == -1)
+		return (cleanup_iteration(cleanup), -1);
 	expander(token, *my_envp);
 	node = parse(token, ft_tokens_size(token));
 	if (!node)
 		return (free_tokens(token), -1);
 	cleanup->line = line;
-	cleanup->ast = node;
 	cleanup->tokens = token;
-	cleanup->pipeline = NULL;
-	cleanup->head_pipeline = NULL;
+	cleanup->ast = node;
 	g_exit_status = exec_ast(node, my_envp, cleanup);
 	free_tokens(cleanup->tokens);
 	cleanup->tokens = NULL;

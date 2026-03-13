@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:54:51 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 23:53:09 by root             ###   ########.fr       */
+/*   Updated: 2026/03/13 14:56:05 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,16 @@ int	get_var_len(char *str, int *i, char **envp)
 	int		j;
 	char	*tmp;
 	char	*value;
+	char	*status_str;
 
+	if (str[*i + 1] == '?')
+	{
+		status_str = ft_itoa(g_exit_status);
+		*i += 1;
+		j = ft_strlen(status_str);
+		free(status_str);
+		return (j);
+	}
 	j = *i + 1;
 	while (ft_isalnum(str[j]) || str[j] == '_')
 		j++;
@@ -60,13 +69,31 @@ int	expanded_len(char *str, char **envp)
 	return (total_len);
 }
 
+static int	copy_str_to_result(char *str, char *result, int k)
+{
+	int	j;
+
+	j = 0;
+	while (str[j])
+		result[k++] = str[j++];
+	return (k);
+}
+
 int	copy_var_value(t_expand_tokens *tokens, int *i, int k)
 {
 	int		j;
 	char	*tmp;
 	char	*value;
-	int		len;
+	char	*status_str;
 
+	if (tokens->str[*i + 1] == '?')
+	{
+		status_str = ft_itoa(g_exit_status);
+		*i += 1;
+		k = copy_str_to_result(status_str, tokens->result, k);
+		free(status_str);
+		return (k);
+	}
 	j = *i + 1;
 	while (ft_isalnum(tokens->str[j]) || tokens->str[j] == '_')
 		j++;
@@ -78,10 +105,7 @@ int	copy_var_value(t_expand_tokens *tokens, int *i, int k)
 	*i = j - 1;
 	if (!value)
 		return (k);
-	len = 0;
-	while (value[len])
-		tokens->result[k++] = value[len++];
-	return (k);
+	return (copy_str_to_result(value, tokens->result, k));
 }
 
 char	*copy_expanded_str(t_expand_tokens *tokens)
@@ -104,11 +128,4 @@ char	*copy_expanded_str(t_expand_tokens *tokens)
 	}
 	tokens->result[k] = '\0';
 	return (tokens->result);
-}
-
-int	is_valid_var_char(char c)
-{
-	if (ft_isalpha(c) || c == '_')
-		return (1);
-	return (0);
 }

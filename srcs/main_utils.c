@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 15:00:21 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/10 15:51:43 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 16:42:20 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,14 @@ void	free_pipeline(t_pipeline *p)
 		free(p);
 		p = tmp;
 	}
+}
+
+void	init_cleanup(t_cleanup *cleanup)
+{
+	cleanup->line = NULL;
+	cleanup->tokens = NULL;
+	cleanup->ast = NULL;
+	cleanup->pipeline = NULL;
+	cleanup->head_pipeline = NULL;
+	cleanup->last_status = 0;
 }

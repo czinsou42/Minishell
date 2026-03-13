@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 11:22:37 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/22 18:12:40 by root             ###   ########.fr       */
+/*   Updated: 2026/03/13 17:02:23 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,19 @@ void	print_ast(t_node *node, int depth)
 
 void	free_ast(t_node *node)
 {
-	if (node == NULL)
+	if (!node)
 		return ;
 	free_ast(node->left);
 	free_ast(node->right);
+
 	if (node->command)
 	{
 		if (node->command->argv)
 			ft_free_split(node->command->argv);
+
 		if (node->command->redirections)
-		{
 			free_redirections(node->command->redirections);
-		}
+
 		free(node->command);
 	}
 	free(node);

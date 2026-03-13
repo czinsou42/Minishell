@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 13:14:49 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/09 16:35:07 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 11:52:33 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ t_token	*create_token(t_token_type type, t_quote_type quote, char *str, int len)
 	new_token->quote = quote;
 	new_token->next = NULL;
 	new_token->heredoc_content = NULL;
+	new_token->heredoc_fd = -1;
 	return (new_token);
 }
 

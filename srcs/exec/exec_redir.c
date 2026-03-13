@@ -6,13 +6,13 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 13:58:04 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 14:03:40 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 15:20:30 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	apply_redirections(t_redir *redir)
+void	apply_redirections(t_redir *redir, t_cleanup *cleanup)
 {
 	t_redir	*current;
 
@@ -20,13 +20,13 @@ void	apply_redirections(t_redir *redir)
 	while (current)
 	{
 		if (current->type == REDIR_IN)
-			apply_in(current);
+			apply_in(current, cleanup);
 		else if (current->type == REDIR_OUT)
-			apply_out(current);
+			apply_out(current, cleanup);
 		else if (current->type == REDIR_APPEND)
-			apply_append(current);
+			apply_append(current, cleanup);
 		else if (current->type == REDIR_HEREDOC)
-			apply_heredoc(current);
+			apply_heredoc(current, cleanup);
 		current = current->next;
 	}
 }

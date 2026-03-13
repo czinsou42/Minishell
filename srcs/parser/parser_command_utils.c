@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/19 14:02:22 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 17:02:02 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,10 @@ void	free_redirections(t_redir *redirections)
 	while (current)
 	{
 		temp = current->next;
-		free(current->file);
-		free(current->heredoc_content);
+		if (current->file)
+			free(current->file);
+		if (current->heredoc_content)
+			free(current->heredoc_content);
 		free(current);
 		current = temp;
 	}

@@ -6,7 +6,7 @@
 #    By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2026/02/23 15:18:25 by czinsou          ###   ########.fr        #
+#    Updated: 2026/03/13 16:58:13 by czinsou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,6 +46,7 @@ EXEC_SRCS = srcs/exec/exec_and.c \
 			srcs/exec/exec.c \
 			srcs/exec/exec_pipeline_utils.c \
 			srcs/exec/exec_pipeline.c \
+			srcs/exec/exec_cleanup.c \
 
 BUILTINS_SRCS = srcs/builtins/builtins_cd.c \
 				srcs/builtins/builtins_utils.c \
@@ -55,9 +56,11 @@ BUILTINS_SRCS = srcs/builtins/builtins_cd.c \
 				srcs/builtins/builtins_simple.c \
 				srcs/builtins/builtins.c \
 
-HEREDOC_SRCS = srcs/heredoc/heredoc.c
+HEREDOC_SRCS = srcs/heredoc/heredoc.c \
+			   srcs/heredoc/handle_single_heredoc.c \
 
-MAIN_SRCS = srcs/main_utils.c
+MAIN_SRCS = srcs/main_utils.c \
+			srcs/main_utils2.c \
 
 SRCS = srcs/main.c $(LEXER_SRCS) $(AST_SRCS) $(PARSER_SRCS) $(EXPAND_SRCS) $(EXEC_SRCS) $(HEREDOC_SRCS) $(BUILTINS_SRCS) $(MAIN_SRCS)
 

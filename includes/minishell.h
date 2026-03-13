@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/02/23 15:02:52 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/13 16:55:04 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct s_token
 	t_quote_type		quote;
 	char				*str;
 	char				*heredoc_content;
+	int					heredoc_fd;
 	struct s_token		*next;
 }						t_token;
 
@@ -75,6 +76,7 @@ typedef struct s_redir
 	t_redir_type		type;
 	char				*file;
 	char				*heredoc_content;
+	int					heredoc_fd;
 	struct s_redir		*next;
 }						t_redir;
 typedef struct s_command
@@ -142,7 +144,7 @@ void					skip_spaces(char *line, int *i);
 t_token_type			get_operator_type(char *str);
 t_quote_type			get_quote_type(char *line, int *i, char *quote_char);
 t_quote_type			get_quote_type(char *line, int *i, char *quote_char);
-int						process_heredoc(t_token *tokens);
+int						process_heredoc(t_token *tokens, t_cleanup *cleanup);
 void					expander(t_token *tokens, char **envp);
 char					*expand(t_expand_tokens *tokens);
 int						get_var_len(char *str, int *i, char **envp);
@@ -189,12 +191,12 @@ int						exec_and(t_node *node, char ***envp,
 char					*get_path(char *cmd, char **envp);
 char					*find_path_in_env(char **envp);
 char					*try_path(char **paths, char *cmd);
-void					apply_redirections(t_redir *redir);
+void					apply_redirections(t_redir *redir, t_cleanup *cleanup);
 void					print_redir_error(char *file);
-void					apply_in(t_redir *redir);
-void					apply_out(t_redir *redir);
-void					apply_append(t_redir *redir);
-void					apply_heredoc(t_redir *redir);
+void					apply_in(t_redir *redir, t_cleanup *cleanup);
+void					apply_out(t_redir *redir, t_cleanup *cleanup);
+void					apply_append(t_redir *redir, t_cleanup *cleanup);
+void					apply_heredoc(t_redir *redir, t_cleanup *cleanup);
 void					print_command_error(char *cmd, int error_type);
 int						get_exit_code(int status);
 int						builtin_cd(t_command *cmd, char ***envp);
@@ -241,5 +243,9 @@ void					setup_signals(void);
 void					setup_child_pipe(int prev_fd, int *pipefd,
 							int has_next);
 void					expand_wildcard_token(t_token *token);
+int						handle_single_heredoc(t_token *token,
+							t_cleanup *cleanup);
+void					init_cleanup(t_cleanup *cleanup);
+void					cleanup_iteration(t_cleanup *cleanup);
 
 #endif
