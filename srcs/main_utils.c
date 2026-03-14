@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 15:00:21 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/13 16:42:20 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/14 16:56:40 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	free_envp(char **envp)
 {
 	int	i;
 
-	if (!envp)
+	if (!envp || !*envp)
 		return ;
 	i = 0;
 	while (envp[i])

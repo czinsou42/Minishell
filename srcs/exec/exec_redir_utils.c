@@ -103,34 +103,4 @@ void	apply_heredoc(t_redir *redir, t_cleanup *cleanup)
 	free(redir->heredoc_content);
 	redir->heredoc_content = NULL;
 }
-// void	apply_heredoc(t_redir *redir, t_cleanup *cleanup)
-// {
-// 	int	pipe_fd[2];
 
-// 	if (!redir || !redir->heredoc_content)
-// 		cleanup_and_exit(cleanup, 1);
-// 	if (pipe(pipe_fd) == -1)
-// 	{
-// 		perror("pipe");
-// 		cleanup_and_exit(cleanup, 1);
-// 	}
-// 	if (write(pipe_fd[1], redir->heredoc_content,
-// 			ft_strlen(redir->heredoc_content)) == -1)
-// 	{
-// 		perror("write");
-// 		close(pipe_fd[0]);
-// 		close(pipe_fd[1]);
-// 		cleanup_and_exit(cleanup, 1);
-// 	}
-// 	close(pipe_fd[1]);
-// 	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-// 	{
-// 		perror("dup2");
-// 		close(pipe_fd[0]);
-// 		cleanup_and_exit(cleanup, 1);
-// 	}
-// 	close(pipe_fd[0]);
-// 	free(redir->heredoc_content);
-// 	redir->heredoc_content = NULL;
-// 	redir->heredoc_fd = STDIN_FILENO;
-// }

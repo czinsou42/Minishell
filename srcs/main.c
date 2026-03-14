@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/13 16:56:34 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/14 18:27:43 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,15 @@ static int	process_input(char *line, char ***my_envp, t_cleanup *cleanup)
 	token = lexer(line);
 	if (!token)
 		return (-1);
+	cleanup->line = line;
+	cleanup->tokens = token;
+	cleanup->envp = *my_envp;
 	if (process_heredoc(token, cleanup) == -1)
-		return (cleanup_iteration(cleanup), -1);
+		return (free_tokens(token), -1);
 	expander(token, *my_envp);
 	node = parse(token, ft_tokens_size(token));
 	if (!node)
 		return (free_tokens(token), -1);
-	cleanup->line = line;
-	cleanup->tokens = token;
 	cleanup->ast = node;
 	g_exit_status = exec_ast(node, my_envp, cleanup);
 	free_tokens(cleanup->tokens);
@@ -87,6 +88,7 @@ static void	shell_loop(char ***my_envp, t_cleanup *cleanup)
 		free(line);
 	}
 }
+
 
 int	main(int argc, char **argv, char **envp)
 {

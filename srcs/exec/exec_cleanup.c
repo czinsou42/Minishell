@@ -6,13 +6,13 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 15:37:06 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/13 16:51:29 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/14 18:25:34 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static	void	close_all_heredoc_fds(t_token *tokens)
+static void	close_all_heredoc_fds(t_token *tokens)
 {
 	t_token	*all_tokens;
 
@@ -34,7 +34,7 @@ void	cleanup_and_exit(t_cleanup *cleanup, int status)
 
 	if (cleanup->line)
 		free(cleanup->line);
-	if (cleanup->head_pipeline)
+	if (cleanup->pipeline)
 	{
 		while (cleanup->head_pipeline)
 		{
@@ -53,6 +53,7 @@ void	cleanup_and_exit(t_cleanup *cleanup, int status)
 	}
 	if (cleanup->ast)
 		free_ast(cleanup->ast);
+	free_envp(cleanup->envp);
 	clear_history();
 	exit(status);
 }

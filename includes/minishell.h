@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/13 16:55:04 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/14 19:23:14 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ typedef struct s_cleanup
 	t_pipeline			*head_pipeline;
 	t_node				*ast;
 	int					last_status;
+	char				**envp;
 }						t_cleanup;
 
 typedef struct s_expand_tokens
@@ -247,5 +248,6 @@ int						handle_single_heredoc(t_token *token,
 							t_cleanup *cleanup);
 void					init_cleanup(t_cleanup *cleanup);
 void					cleanup_iteration(t_cleanup *cleanup);
+void					herdoc_sigint(int sig);
 
 #endif

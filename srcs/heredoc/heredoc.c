@@ -6,11 +6,18 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/13 16:39:40 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/14 19:22:50 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	herdoc_sigint(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	exit(130);
+}
 
 int	process_heredoc(t_token *tokens, t_cleanup *cleanup)
 {
@@ -39,3 +46,4 @@ int	process_heredoc(t_token *tokens, t_cleanup *cleanup)
 	}
 	return (0);
 }
+

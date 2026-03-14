@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/13 17:16:34 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/14 16:08:34 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,17 @@ static int	apply_heredoc_content(t_redir *redir, t_token *current)
 		return (0);
 	if (current->type == TOKEN_REDIR_HEREDOC)
 	{
-		redir->heredoc_content = ft_strdup(current->heredoc_content ? current->heredoc_content : "");
+		if (current->heredoc_content)
+			redir->heredoc_content = ft_strdup(current->heredoc_content);
+		else
+			redir->heredoc_content = ft_strdup("");
 		if (!redir->heredoc_content)
 			return (0);
+		if (current->heredoc_fd != -1)
+		{
+			close(current->heredoc_fd);
+			current->heredoc_fd = -1;
+		}
 	}
 	return (1);
 }
@@ -66,16 +74,13 @@ static t_redir	*create_redir_node(t_token *current)
 	if (!redir)
 		return (NULL);
 	redir->type = REDIR_HEREDOC;
+	free(redir->file);
 	redir->file = ft_strdup(current->next->str);
 	if (!redir->file)
 		return (free(redir), NULL);
 	redir->heredoc_fd = current->heredoc_fd;
 	if (!apply_heredoc_content(redir, current))
-	{
-		free(redir->file);
-		free(redir);
-		return (NULL);
-	}
+		return (free(redir->file), free(redir), NULL);
 	return (redir);
 }
 

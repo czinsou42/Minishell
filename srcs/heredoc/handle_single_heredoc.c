@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 12:28:24 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/13 16:48:02 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/14 19:34:59 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static char	*read_heredoc_content(char *delimiter)
 	{
 		new_buffer = read_heredoc_line(delimiter, buffer);
 		if (!new_buffer)
-			return (NULL);
+			return (free(buffer), NULL);
 		if (new_buffer == buffer)
 			break ;
 		buffer = new_buffer;
@@ -59,7 +59,7 @@ static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup)
 {
 	char	*content;
 
-	signal(SIGINT, SIG_DFL);
+	signal(SIGINT, herdoc_sigint);
 	content = read_heredoc_content(delimiter);
 	if (content)
 	{
@@ -67,6 +67,7 @@ static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup)
 			perror("minishell: write");
 		free(content);
 	}
+	printf("je suis la");
 	close(write_fd);
 	rl_clear_history();
 	cleanup_and_exit(cleanup, 0);
@@ -114,7 +115,9 @@ int	handle_single_heredoc(t_token *token, t_cleanup *cleanup)
 	waitpid(pid, &status, 0);
 	signal(SIGINT, handler_signal);
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		return (close(pipefd[0]), -1);
+		return (close(pipefd[0]), (g_exit_status = 130), -1);
+	if (WIFEXITED(status))
+		g_exit_status = WEXITSTATUS(status);
 	token->heredoc_fd = pipefd[0];
 	return (0);
 }
