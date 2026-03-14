@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/14 19:23:14 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/14 20:08:25 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@ int						builtin_pwd(t_command *cmd);
 int						builtin_env(t_command *cmd, char **envp);
 int						builtin_export(t_command *cmd, char ***env);
 int						builtin_unset(t_command *cmd, char ***env);
-int						builtin_exit(t_command *cmd, char ***envp,
+int						builtin_exit(t_command *cmd,
 							t_cleanup *cleanup);
 int						is_numeric_exit(const char *str);
 int						get_exit_value(const char *str);
@@ -248,6 +248,6 @@ int						handle_single_heredoc(t_token *token,
 							t_cleanup *cleanup);
 void					init_cleanup(t_cleanup *cleanup);
 void					cleanup_iteration(t_cleanup *cleanup);
-void					herdoc_sigint(int sig);
+void	heredoc_sigint(int sig);
 
 #endif

@@ -6,17 +6,22 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/14 19:22:50 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/14 20:04:15 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	herdoc_sigint(int sig)
+void	heredoc_sigint(int sig)
 {
-	(void)sig;
-	write(1, "\n", 1);
-	exit(130);
+	if (sig == SIGINT)
+	{
+		g_exit_status = 130;
+		write(1, "\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
 }
 
 int	process_heredoc(t_token *tokens, t_cleanup *cleanup)
@@ -46,4 +51,3 @@ int	process_heredoc(t_token *tokens, t_cleanup *cleanup)
 	}
 	return (0);
 }
-

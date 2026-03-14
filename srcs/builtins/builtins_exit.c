@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_exit.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 10:54:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/02/23 01:09:06 by root             ###   ########.fr       */
+/*   Updated: 2026/03/14 20:07:54 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	get_exit_value(const char *str)
 	return ((unsigned char)val);
 }
 
-int	builtin_exit(t_command *cmd, char ***envp, t_cleanup *cleanup)
+int	builtin_exit(t_command *cmd, t_cleanup *cleanup)
 {
 	int	exit_code;
 
@@ -47,20 +47,17 @@ int	builtin_exit(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	rl_free_line_state();
 	if (!cmd->argv[1])
 	{
-		free_envp(*envp);
 		cleanup_and_exit(cleanup, g_exit_status);
 	}
 	if (!is_numeric_exit(cmd->argv[1]))
 	{
 		printf("minishell: exit: %s: numeric argument required\n", cmd->argv[1]);
-		free_envp(*envp);
 		cleanup_and_exit(cleanup, 255);
 	}
 	if (cmd->argv[2])
 		return (printf("minishell: exit: too many arguments\n"), 1);
 	exit_code = get_exit_value(cmd->argv[1]);
 	g_exit_status = exit_code;
-	free_envp(*envp);
 	cleanup_and_exit(cleanup, exit_code);
 	return (g_exit_status);
 }
