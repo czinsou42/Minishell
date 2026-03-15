@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_command.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 13:07:54 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/15 13:27:06 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,11 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	int	saved_stdout;
 	int	ret;
 
-	if (!cmd || !cmd->argv || !cmd->argv[0])
+	if (!cmd || !cmd->argv || !cmd->argv[0] || !*cmd->argv[0])
+		return (0);
+	while (cmd->argv[0] && !*cmd->argv[0])
+		cmd->argv++;
+	if (!cmd->argv[0])
 		return (0);
 	if (is_parent_builtin(cmd->argv[0]))
 		return (apply_redirections(cmd->redirections, cleanup),
