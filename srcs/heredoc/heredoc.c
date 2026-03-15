@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 13:07:28 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/15 14:10:45 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,26 @@
 
 void	heredoc_sigint(int sig)
 {
-	static int	calls = 0;
-
 	(void)sig;
 	g_exit_status = 130;
-	if (calls++ == 0)
-		write(STDOUT_FILENO, "\n", 1);
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	write(STDOUT_FILENO, "\n", 1);
+}
+
+void	setup_heredoc_signals(void)
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = heredoc_sigint;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa, NULL);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 int	process_heredoc(t_token *tokens, t_cleanup *cleanup)
 {
-	t_token	*current;
+	t_token *current;
 
 	current = tokens;
 	while (current)

@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 12:28:24 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/15 13:07:00 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/15 14:07:16 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ static char	*read_heredoc_line(char *delimiter, char *buffer)
 	char	*joined_buffer;
 
 	line = readline("> ");
-	printf("DEBUG: line='%s', g_exit_status=%d\n", line ? line : "NULL", g_exit_status);
-	if (!line)
-		return (free(buffer), NULL);
 	if (g_exit_status == 130)
 	{
-		free(line);
+		if (line)
+			free(line);
 		return (free(buffer), NULL);
 	}
+	if (!line)
+		return (free(buffer), NULL);
 	if (ft_strcmp(line, delimiter) == 0)
 		return (free(line), buffer);
 	line_with_newline = ft_strjoin(line, "\n");
@@ -65,6 +65,7 @@ static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup)
 {
 	char	*content;
 
+	g_exit_status = 0;
 	signal(SIGINT, heredoc_sigint);
 	signal(SIGQUIT, SIG_IGN);
 	content = read_heredoc_content(delimiter);
@@ -72,7 +73,6 @@ static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup)
 	{
 		close(write_fd);
 		rl_clear_history();
-		printf("Je suis ici\n");
 		cleanup_and_exit(cleanup, 130);
 	}
 	if (write(write_fd, content, ft_strlen(content)) == -1)
@@ -116,13 +116,9 @@ int	handle_single_heredoc(t_token *token, t_cleanup *cleanup)
 	signal(SIGINT, SIG_IGN);
 	pid = fork_heredoc_child(token, pipefd, cleanup);
 	if (pid == -1)
-	{
-		close(pipefd[0]);
-		close(pipefd[1]);
-		return (-1);
-	}
+		return (close(pipefd[0]), close(pipefd[1]), -1);
 	close(pipefd[1]);
-	pid = waitpid(pid, &status, 0);
+	waitpid(pid, &status, 0);
 	signal(SIGINT, handler_signal);
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 		return (close(pipefd[0]), (g_exit_status = 130), -1);
