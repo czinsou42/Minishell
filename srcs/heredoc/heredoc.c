@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/14 20:04:15 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/15 13:07:28 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,12 @@
 
 void	heredoc_sigint(int sig)
 {
-	if (sig == SIGINT)
-	{
-		g_exit_status = 130;
-		write(1, "\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
+	static int	calls = 0;
+
+	(void)sig;
+	g_exit_status = 130;
+	if (calls++ == 0)
+		write(STDOUT_FILENO, "\n", 1);
 }
 
 int	process_heredoc(t_token *tokens, t_cleanup *cleanup)

@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 15:37:06 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/14 18:25:34 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/15 13:08:14 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,25 @@ static void	close_all_heredoc_fds(t_token *tokens)
 	}
 }
 
-void	cleanup_and_exit(t_cleanup *cleanup, int status)
+static void	free_pipeline_list(t_pipeline *head)
 {
 	t_pipeline	*tmp;
 
+	while (head)
+	{
+		tmp = head->next;
+		free(head);
+		head = tmp;
+	}
+}
+
+void	cleanup_and_exit(t_cleanup *cleanup, int status)
+{
 	if (cleanup->line)
 		free(cleanup->line);
 	if (cleanup->pipeline)
 	{
-		while (cleanup->head_pipeline)
-		{
-			tmp = cleanup->head_pipeline->next;
-			free(cleanup->head_pipeline);
-			cleanup->head_pipeline = tmp;
-		}
+		free_pipeline_list(cleanup->head_pipeline);
 		cleanup->pipeline = NULL;
 		cleanup->head_pipeline = NULL;
 	}

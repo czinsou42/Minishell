@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 12:28:24 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/14 20:10:13 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/15 13:07:00 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,14 @@ static char	*read_heredoc_line(char *delimiter, char *buffer)
 	char	*joined_buffer;
 
 	line = readline("> ");
+	printf("DEBUG: line='%s', g_exit_status=%d\n", line ? line : "NULL", g_exit_status);
 	if (!line)
 		return (free(buffer), NULL);
+	if (g_exit_status == 130)
+	{
+		free(line);
+		return (free(buffer), NULL);
+	}
 	if (ft_strcmp(line, delimiter) == 0)
 		return (free(line), buffer);
 	line_with_newline = ft_strjoin(line, "\n");
@@ -66,6 +72,7 @@ static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup)
 	{
 		close(write_fd);
 		rl_clear_history();
+		printf("Je suis ici\n");
 		cleanup_and_exit(cleanup, 130);
 	}
 	if (write(write_fd, content, ft_strlen(content)) == -1)
@@ -115,7 +122,7 @@ int	handle_single_heredoc(t_token *token, t_cleanup *cleanup)
 		return (-1);
 	}
 	close(pipefd[1]);
-	waitpid(pid, &status, 0);
+	pid = waitpid(pid, &status, 0);
 	signal(SIGINT, handler_signal);
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 		return (close(pipefd[0]), (g_exit_status = 130), -1);
