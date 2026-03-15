@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_applyredir.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/14 16:08:34 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/15 14:34:21 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,11 @@ static t_redir	*create_redir_node(t_token *current)
 			print_unexpected_token();
 		return (NULL);
 	}
+	if (current->type != TOKEN_REDIR_HEREDOC)
+		return (init_redir_node(current));
 	redir = init_redir_node(current);
 	if (!redir)
 		return (NULL);
-	redir->type = REDIR_HEREDOC;
-	free(redir->file);
-	redir->file = ft_strdup(current->next->str);
-	if (!redir->file)
-		return (free(redir), NULL);
 	redir->heredoc_fd = current->heredoc_fd;
 	if (!apply_heredoc_content(redir, current))
 		return (free(redir->file), free(redir), NULL);
