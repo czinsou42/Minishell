@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 11:22:37 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/13 17:02:23 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/16 15:42:27 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	free_ast(t_node *node)
 		return ;
 	free_ast(node->left);
 	free_ast(node->right);
-
 	if (node->command)
 	{
 		if (node->command->argv)
@@ -55,7 +54,6 @@ void	free_ast(t_node *node)
 
 		if (node->command->redirections)
 			free_redirections(node->command->redirections);
-
 		free(node->command);
 	}
 	free(node);

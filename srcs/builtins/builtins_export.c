@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_export.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 17:23:33 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/15 12:39:24 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/16 14:43:21 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ int	handle_export_arg(char *arg, char ***env)
 		if (!name)
 			return (1);
 		if (!is_valid_env(name))
-				return (print_error_export(arg), free(name), 1);
+			return (print_error_export(arg), free(name), 1);
 		value = eq + 1;
 		update_or_add_env(env, name, value);
 		free(name);

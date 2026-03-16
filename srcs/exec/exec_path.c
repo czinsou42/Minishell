@@ -6,22 +6,25 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:35:38 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/09 16:40:26 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/15 16:26:15 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+#include <unistd.h>
+
 char	*get_path(char *cmd, char **envp)
 {
 	char	*path;
 	char	**paths;
+	char	*result;
 
 	if (!cmd || !*cmd)
 		return (NULL);
 	if (ft_strchr(cmd, '/'))
 	{
-		if (access(cmd, X_OK) != -1)
+		if (access(cmd, F_OK) == 0)
 			return (cmd);
 		return (NULL);
 	}
@@ -31,8 +34,9 @@ char	*get_path(char *cmd, char **envp)
 	paths = ft_split(path, ':');
 	if (!paths)
 		return (NULL);
-	path = try_path(paths, cmd);
-	return (ft_free_split(paths), path);
+	result = try_path(paths, cmd);
+	ft_free_split(paths);
+	return (result);
 }
 
 char	*find_path_in_env(char **envp)

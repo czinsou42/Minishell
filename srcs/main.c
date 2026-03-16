@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 11:30:56 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/16 15:10:43 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ static int	process_input(char *line, char ***my_envp, t_cleanup *cleanup)
 	node = NULL;
 	token = lexer(line);
 	if (!token)
-		return (-1);
+		return (ft_putstr_fd("minishell: syntax error: unclosed quote\n", 2),
+			(g_exit_status = 2), -1);
 	cleanup->line = line;
 	cleanup->tokens = token;
 	cleanup->envp = *my_envp;
@@ -89,7 +90,6 @@ static void	shell_loop(char ***my_envp, t_cleanup *cleanup)
 	}
 }
 
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_cleanup	cleanup;
@@ -100,7 +100,6 @@ int	main(int argc, char **argv, char **envp)
 	if (init_shell(envp, &my_envp, &cleanup))
 		return (1);
 	shell_loop(&my_envp, &cleanup);
-	//printf("FREE ENV\n");
 	free_envp(my_envp);
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 12:21:15 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/16 15:11:51 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <sys/ioctl.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
@@ -59,6 +60,7 @@ typedef struct s_token
 	char				*str;
 	char				*heredoc_content;
 	int					heredoc_fd;
+	int					joined;
 	struct s_token		*next;
 }						t_token;
 
@@ -143,7 +145,7 @@ int						handle_word(char *line, int *i, t_token **tokens);
 int						handle_quotes(char *line, int *i, t_token **tokens);
 void					skip_spaces(char *line, int *i);
 t_token_type			get_operator_type(char *str);
-t_quote_type			get_quote_type(char *line, int *i);
+t_quote_type			get_quote_type(char *line, int *i, char *quote_char);
 int						process_heredoc(t_token *tokens, t_cleanup *cleanup);
 void					expander(t_token *tokens, char **envp);
 char					*expand(t_expand_tokens *tokens);
@@ -191,12 +193,12 @@ int						exec_and(t_node *node, char ***envp,
 char					*get_path(char *cmd, char **envp);
 char					*find_path_in_env(char **envp);
 char					*try_path(char **paths, char *cmd);
-void					apply_redirections(t_redir *redir, t_cleanup *cleanup);
+int						apply_redirections(t_redir *redir, t_cleanup *cleanup);
 void					print_redir_error(char *file);
-void					apply_in(t_redir *redir, t_cleanup *cleanup);
-void					apply_out(t_redir *redir, t_cleanup *cleanup);
-void					apply_append(t_redir *redir, t_cleanup *cleanup);
-void					apply_heredoc(t_redir *redir, t_cleanup *cleanup);
+int						apply_in(t_redir *redir, t_cleanup *cleanup);
+int						apply_out(t_redir *redir, t_cleanup *cleanup);
+int						apply_append(t_redir *redir, t_cleanup *cleanup);
+int						apply_heredoc(t_redir *redir, t_cleanup *cleanup);
 void					print_command_error(char *cmd, int error_type);
 int						get_exit_code(int status);
 int						builtin_cd(t_command *cmd, char ***envp);
@@ -209,8 +211,7 @@ int						builtin_pwd(t_command *cmd);
 int						builtin_env(t_command *cmd, char **envp);
 int						builtin_export(t_command *cmd, char ***env);
 int						builtin_unset(t_command *cmd, char ***env);
-int						builtin_exit(t_command *cmd,
-							t_cleanup *cleanup);
+int						builtin_exit(t_command *cmd, t_cleanup *cleanup);
 int						is_numeric_exit(const char *str);
 int						get_exit_value(const char *str);
 void					cleanup_and_exit(t_cleanup *cleanup, int status);
@@ -247,6 +248,9 @@ int						handle_single_heredoc(t_token *token,
 							t_cleanup *cleanup);
 void					init_cleanup(t_cleanup *cleanup);
 void					cleanup_iteration(t_cleanup *cleanup);
-void	heredoc_sigint(int sig);
+void					heredoc_sigint(int sig);
+char					*read_full_line(void);
+int						has_unclosed_quote(char *line);
+void					apply_clean(t_token *tokens);
 
 #endif

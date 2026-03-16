@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:28:47 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 12:11:40 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/16 15:13:21 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,18 @@ static void	expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
 	char	*expanded_str;
 
 	if (tokens->quote == SINGLE_QUOTE)
-		return ;
+		return (apply_clean(tokens));
 	expanded_str = expand_token_str(expand_tokens, tokens->str);
 	if (!expanded_str)
 		return ;
 	expand_heredoc_content(expand_tokens, tokens);
 	if (tokens->type == TOKEN_REDIR_HEREDOC)
-	{
-		free(expanded_str);
-		return ;
-	}
+		return (free(expanded_str));
 	free(tokens->str);
 	tokens->str = expanded_str;
 	if (tokens->quote == NO_QUOTE && ft_strchr(tokens->str, '*'))
 		expand_wildcard_token(tokens);
+	apply_clean(tokens);
 }
 
 void	expander(t_token *tokens, char **envp)

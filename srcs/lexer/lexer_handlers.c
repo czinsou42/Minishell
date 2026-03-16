@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_handlers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 14:51:41 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 12:28:37 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/16 14:46:02 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "minishell.h"
 
 #include "minishell.h"
 
@@ -41,34 +43,23 @@ int	handle_operator(char *line, int *i, t_token **tokens)
 
 int	handle_word(char *line, int *i, t_token **tokens)
 {
-	int		start;
-	t_token	*token;
+	int		j;
 	int		len;
+	t_token	*token;
 
-	start = *i;
-	while (line[*i] && !ft_isspace(line[*i]) && !ft_isdelimiter(line[*i]))
-	{
-		if (line[*i] == '"' || line[*i] == '\'')
-		{
-			char quote = line[*i];
-			(*i)++;
-			while (line[*i] && line[*i] != quote)
-				(*i)++;
-			if (line[*i] == '\0')
-				return (-1);
-			(*i)++;
-		}
-		else
-			(*i)++;
-	}
-	len = *i - start;
-	token = create_token(TOKEN_WORD, get_quote_type(line, &start), &line[start], len);
+	j = *i;
+	while (!ft_isspace(line[j]) && !ft_isdelimiter(line[j]) && line[j]
+		!= '"' && line[j] != '\'' && line[j] != '\0')
+		j++;
+	len = j - *i;
+	token = create_token(TOKEN_WORD, NO_QUOTE, &line[*i], len);
 	if (!token)
 		return (-1);
 	token_add_back(tokens, token);
+	*i = j;
 	return (0);
 }
-/*
+
 int	handle_quotes(char *line, int *i, t_token **tokens)
 {
 	t_quote_type	quote_type;
@@ -77,7 +68,7 @@ int	handle_quotes(char *line, int *i, t_token **tokens)
 	int				j;
 	int				len;
 
-	quote_type = get_quote_type(line, i);
+	quote_type = get_quote_type(line, i, &quote_char);
 	j = (*i);
 	(*i)++;
 	while (line[*i] != quote_char && line[*i] != '\0')
@@ -92,4 +83,3 @@ int	handle_quotes(char *line, int *i, t_token **tokens)
 	(*i)++;
 	return (0);
 }
-*/

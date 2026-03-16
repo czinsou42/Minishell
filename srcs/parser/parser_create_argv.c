@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/09 16:28:25 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/16 15:22:16 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,29 @@ static t_token	*skip_redirection(t_token *current, int *token_index,
 	return (current);
 }
 
-static int	add_word(char **argv, int *i, t_token *current)
+static int	add_word(char **argv, int *i, t_token **current)
 {
-	if (current->type == TOKEN_WORD)
+	char	*result;
+	char	*tmp;
+
+	if ((*current)->type != TOKEN_WORD)
+		return (0);
+	result = ft_strdup("");
+	if (!result)
+		return (1);
+	while (*current && (*current)->type == TOKEN_WORD)
 	{
-		argv[*i] = remove_quote(current->str);
-		if (!argv[*i])
+		tmp = ft_strjoin(result, (*current)->str);
+		free(result);
+		if (!tmp)
 			return (1);
-		(*i)++;
+		result = tmp;
+		if ((*current)->next && (*current)->next->joined)
+			*current = (*current)->next;
+		else
+			break ;
 	}
+	argv[(*i)++] = result;
 	return (0);
 }
 
@@ -72,7 +86,7 @@ static int	fill_argv(char **argv, t_token *tokens, int length)
 		}
 		if (!current)
 			break ;
-		if (add_word(argv, &i, current))
+		if (add_word(argv, &i, &current))
 			return (-1);
 		token_index++;
 		current = current->next;

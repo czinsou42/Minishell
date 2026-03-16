@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_command.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 13:27:06 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/15 17:21:39 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,18 @@ static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	apply_redirections(cmd->redirections, cleanup);
+	printf("LALALAL\n");
+	if (apply_redirections(cmd->redirections, cleanup) == 1)
+		cleanup_and_exit(cleanup, 1);
 	path = get_path(cmd->argv[0], *envp);
 	if (!path)
-		(print_command_error(cmd->argv[0], 127),
-			cleanup_and_exit(cleanup, 127));
+	{
+		print_command_error(cmd->argv[0], 127);
+		cleanup_and_exit(cleanup, 127);
+	}
 	execve(path, cmd->argv, *envp);
-	(print_command_error(cmd->argv[0], 126),
-		cleanup_and_exit(cleanup, 126));
+	print_command_error(cmd->argv[0], 126);
+	cleanup_and_exit(cleanup, 126);
 }
 
 static void	setup_parent_signals(void)
@@ -69,12 +73,23 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	if (!cmd->argv[0])
 		return (0);
 	if (is_parent_builtin(cmd->argv[0]))
-		return (apply_redirections(cmd->redirections, cleanup),
-			execute_builtin_parent(cmd, envp, cleanup));
+	{
+		if (apply_redirections(cmd->redirections, cleanup) == 1)
+		{
+			g_exit_status = 1;
+			return (1);
+		}
+		return (execute_builtin_parent(cmd, envp, cleanup));
+	}
 	if (is_simple_builtin(cmd->argv[0]))
 	{
 		saved_stdout = dup(STDOUT_FILENO);
-		apply_redirections(cmd->redirections, cleanup);
+		if (apply_redirections(cmd->redirections, cleanup) == 1)
+		{
+			printf("frdggdf\n");
+			g_exit_status = 1;
+			return (1);
+		}
 		ret = execute_builtin_simple(cmd, envp);
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdout);

@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/19 14:43:20 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/13 14:49:46 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/16 15:11:27 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,16 @@ int	is_valid_var_char(char c)
 	if (ft_isalpha(c) || c == '_' || c == '?')
 		return (1);
 	return (0);
+}
+
+void	apply_clean(t_token *tokens)
+{
+	char	*clean_str;
+
+	clean_str = remove_quote(tokens->str);
+	if (clean_str)
+	{
+		free(tokens->str);
+		tokens->str = clean_str;
+	}
 }

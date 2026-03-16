@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 14:10:45 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/15 14:47:59 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	heredoc_sigint(int sig)
 {
 	(void)sig;
 	g_exit_status = 130;
-	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	ioctl(STDIN_FILENO, 0x5412, "\n");
 	write(STDOUT_FILENO, "\n", 1);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_simple.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 11:24:28 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/15 11:45:25 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/15 16:32:42 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,21 @@ static int	print_echo_arg(char *arg)
 	return (0);
 }
 
+static int	is_nl(char *args)
+{
+	int	j;
+
+	j = 1;
+	if (args[0] == '-' && args[1])
+	{
+		while (args[j] && args[j] == 'n')
+			j++;
+		if (args[j] == 0)
+			return (1);
+	}
+	return (0);
+}
+
 int	builtin_echo(t_command *cmd)
 {
 	int	i;
@@ -40,7 +55,7 @@ int	builtin_echo(t_command *cmd)
 
 	i = 1;
 	newline = 1;
-	if (cmd->argv[1] && ft_strcmp(cmd->argv[1], "-n") == 0)
+	while (cmd->argv[i] && is_nl(cmd->argv[i]) == 1)
 	{
 		newline = 0;
 		i++;
