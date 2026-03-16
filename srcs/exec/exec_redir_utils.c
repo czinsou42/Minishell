@@ -83,30 +83,11 @@ int	apply_append(t_redir *redir, t_cleanup *cleanup)
 
 int	apply_heredoc(t_redir *redir, t_cleanup *cleanup)
 {
-	int	pipe_fd[2];
-
 	(void)cleanup;
-	if (!redir->heredoc_content)
+	if (redir->heredoc_fd == -1)
 		return (1);
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		return (1);
-	}
-	if (write(pipe_fd[1], redir->heredoc_content,
-			ft_strlen(redir->heredoc_content)) == -1)
-	{
-		perror("write");
-		return (1);
-	}
-	close(pipe_fd[1]);
-	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-	{
-		perror("dup2");
-		return (1);
-	}
-	close(pipe_fd[0]);
-	free(redir->heredoc_content);
-	redir->heredoc_content = NULL;
+	if (dup2(redir->heredoc_fd, STDIN_FILENO) == -1)
+		return (perror("dup2"), 1);
+	close(redir->heredoc_fd);
 	return (0);
 }

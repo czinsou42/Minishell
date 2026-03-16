@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_applyredir.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 14:34:21 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/16 16:09:45 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,6 @@ static int	apply_heredoc_content(t_redir *redir, t_token *current)
 			redir->heredoc_content = ft_strdup("");
 		if (!redir->heredoc_content)
 			return (0);
-		if (current->heredoc_fd != -1)
-		{
-			close(current->heredoc_fd);
-			current->heredoc_fd = -1;
-		}
 	}
 	return (1);
 }

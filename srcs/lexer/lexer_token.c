@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 13:14:49 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/16 14:46:28 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/16 16:21:34 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ void	free_tokens(t_token *tokens)
 	while (current)
 	{
 		temp = current->next;
+		if (current->heredoc_fd != -1)
+			close(current->heredoc_fd);
 		free(current->str);
 		free(current);
 		current = temp;

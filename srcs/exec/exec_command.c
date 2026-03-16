@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 17:21:39 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/16 15:48:30 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	printf("LALALAL\n");
 	if (apply_redirections(cmd->redirections, cleanup) == 1)
 		cleanup_and_exit(cleanup, 1);
 	path = get_path(cmd->argv[0], *envp);
