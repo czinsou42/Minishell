@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/13 17:02:02 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/16 16:35:35 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,25 +47,20 @@ int	count_tokens_word(t_token *token, int length)
 	return (count);
 }
 
-void	free_redirections(t_redir *redirections)
+void	free_redirections(t_redir *redir)
 {
-	t_redir	*current;
-	t_redir	*temp;
+	t_redir *tmp;
 
-	if (!redirections)
-		return ;
-	current = redirections;
-	while (current)
+	while (redir)
 	{
-		temp = current->next;
-		if (current->file)
-			free(current->file);
-		if (current->heredoc_content)
-			free(current->heredoc_content);
-		free(current);
-		current = temp;
+		tmp = redir->next;
+		if (redir->file)
+			free(redir->file);
+		if (redir->heredoc_content)
+			free(redir->heredoc_content);
+		free(redir);
+		redir = tmp;
 	}
-	return ;
 }
 
 int	print_parser_redir_error(t_token *token)
