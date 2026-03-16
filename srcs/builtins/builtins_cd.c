@@ -93,6 +93,15 @@ static char	*get_cd_path(t_command *cmd, char **envp, int *should_free)
 	return (path);
 }
 
+int print_cd_error(char *path)
+{
+	perror("minishell: cd: ");
+	perror(path);
+	perror(": ");
+	perror(strerror(errno));
+	return (1);
+}
+
 int	builtin_cd(t_command *cmd, char ***envp)
 {
 	char	oldcwd[PATH_MAX];
@@ -102,13 +111,13 @@ int	builtin_cd(t_command *cmd, char ***envp)
 	if (!getcwd(oldcwd, sizeof(oldcwd)))
 		return (perror("getcwd"), 1);
 	if (cmd->argv[1] && cmd->argv[2])
-		return (printf("minishell: cd: too many arguments\n"), 1);
+		return (perror("minishell: cd: too many arguments\n"), 2);
 	path = get_cd_path(cmd, *envp, &should_free);
 	if (!path)
 		return (1);
 	if (chdir(path) == -1)
 	{
-		printf("minishell: cd: %s: %s\n", path, strerror(errno));
+		print_cd_error(path);
 		if (should_free)
 			free(path);
 		return (1);

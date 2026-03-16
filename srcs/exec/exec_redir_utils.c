@@ -15,10 +15,9 @@
 
 void	print_redir_error(char *file)
 {
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(file, 2);
-	ft_putstr_fd(": ", 2);
-	ft_putstr_fd("No such file or directory\n", 2);
+	perror("minishell: ");
+	perror(file);
+	perror(": No such file or directory\n");
 	exit(1);
 }
 

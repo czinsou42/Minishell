@@ -28,6 +28,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/ioctl.h>
 
 extern int				g_exit_status;
 

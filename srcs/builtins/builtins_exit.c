@@ -38,6 +38,20 @@ int	get_exit_value(const char *str)
 	return ((unsigned char)val);
 }
 
+int	return_exit_error(char *arg, int error_type)
+{
+	if (error_type == 1)
+		perror("minishell: exit: too many arguments\n");
+	else if (error_type == 2)
+	{
+		perror("minishell: exit: ");
+		if (arg)
+			ft_putstr_fd(arg, 2);
+		perror(": numeric argument required\n");
+	}
+	return (2);
+}
+
 int	builtin_exit(t_command *cmd, t_cleanup *cleanup)
 {
 	int	exit_code;
@@ -50,12 +64,9 @@ int	builtin_exit(t_command *cmd, t_cleanup *cleanup)
 		cleanup_and_exit(cleanup, g_exit_status);
 	}
 	if (!is_numeric_exit(cmd->argv[1]))
-	{
-		printf("minishell: exit: %s: numeric argument required\n", cmd->argv[1]);
-		cleanup_and_exit(cleanup, 2);
-	}
+		return (return_exit_error(cmd->argv[1], 2));
 	if (cmd->argv[2])
-		return (printf("minishell: exit: too many arguments\n"), 1);
+		return (return_exit_error(NULL, 1));
 	exit_code = get_exit_value(cmd->argv[1]);
 	g_exit_status = exit_code;
 	cleanup_and_exit(cleanup, exit_code);
