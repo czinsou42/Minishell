@@ -18,7 +18,6 @@ void	print_redir_error(char *file)
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(file, 2);
 	perror(":");
-	exit(1);
 }
 
 int	apply_in(t_redir *redir, t_cleanup *cleanup)

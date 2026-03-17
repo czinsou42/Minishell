@@ -20,7 +20,8 @@ static void	execute_pipeline_cmd(t_command *cmd, t_cleanup *cleanup,
 
 	if (!cmd)
 		return ;
-	apply_redirections(cmd->redirections, cleanup);
+	if (apply_redirections(cmd->redirections, cleanup) == 1)
+		cleanup_and_exit(cleanup, 1);
 	if (execute_builtin_simple(cmd, envp) == 0)
 		cleanup_and_exit(cleanup, 0);
 	env = *envp;
