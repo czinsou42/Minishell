@@ -14,13 +14,25 @@
 
 void	print_command_error(char *cmd, int error_type)
 {
+	struct stat	path_stat;
+
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": ", 2);
 	if (error_type == 127)
-		ft_putstr_fd("command not found\n", 2);
+	{
+		if (ft_strchr(cmd, '/'))
+			ft_putstr_fd("No such file or directory\n", 2);
+		else
+			ft_putstr_fd("command not found\n", 2);
+	}
 	else if (error_type == 126)
-		ft_putstr_fd("Permission denied\n", 2);
+	{
+		if (stat(cmd, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+			ft_putstr_fd("Is a directory\n", 2);
+		else
+			ft_putstr_fd("Permission denied\n", 2);
+	}
 }
 
 int	get_exit_code(int status)

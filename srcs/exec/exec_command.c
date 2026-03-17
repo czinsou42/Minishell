@@ -19,12 +19,16 @@ static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	if (apply_redirections(cmd->redirections, cleanup) == 1)
+	{
 		cleanup_and_exit(cleanup, 1);
+		return ;
+	}
 	path = get_path(cmd->argv[0], *envp);
 	if (!path)
 	{
 		print_command_error(cmd->argv[0], 127);
 		cleanup_and_exit(cleanup, 127);
+		return ;
 	}
 	execve(path, cmd->argv, *envp);
 	print_command_error(cmd->argv[0], 126);
@@ -85,7 +89,7 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 		saved_stdout = dup(STDOUT_FILENO);
 		if (apply_redirections(cmd->redirections, cleanup) == 1)
 		{
-			printf("frdggdf\n");
+//			printf("frdggdf\n");
 			g_exit_status = 1;
 			return (1);
 		}
