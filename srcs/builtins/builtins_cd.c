@@ -57,7 +57,7 @@ static char	*get_dash_path(char **envp)
 	oldpwd = ft_getenv("OLDPWD", envp);
 	if (!oldpwd)
 	{
-		printf("minishell: cd: OLDPWD not set\n");
+		ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
 		return (NULL);
 	}
 	printf("%s\n", oldpwd);
@@ -75,7 +75,7 @@ static char	*get_cd_path(t_command *cmd, char **envp, int *should_free)
 	{
 		home = ft_getenv("HOME", envp);
 		if (!home)
-			return (printf("minishell: cd: HOME not set\n"), NULL);
+			return (ft_putstr_fd("minishell: cd: HOME not set\n", 2), NULL);
 		path = ft_strdup(home);
 		if (!path)
 			return (NULL);
@@ -95,10 +95,8 @@ static char	*get_cd_path(t_command *cmd, char **envp, int *should_free)
 
 int print_cd_error(char *path)
 {
-	perror("minishell: cd: ");
+	ft_putstr_fd("minishell: cd: ", 2);
 	perror(path);
-	perror(": ");
-	perror(strerror(errno));
 	return (1);
 }
 
@@ -111,7 +109,7 @@ int	builtin_cd(t_command *cmd, char ***envp)
 	if (!getcwd(oldcwd, sizeof(oldcwd)))
 		return (perror("getcwd"), 1);
 	if (cmd->argv[1] && cmd->argv[2])
-		return (perror("minishell: cd: too many arguments\n"), 2);
+		return (ft_putstr_fd("minishell: cd: too many arguments\n", 2), 2);
 	path = get_cd_path(cmd, *envp, &should_free);
 	if (!path)
 		return (1);

@@ -86,9 +86,9 @@ static void	print_all_exports(char **envp)
 
 int	print_error_export(const char *arg)
 {
-	perror("minishell: export: ");
-	perror(arg);
-	perror(": not a valid identifier\n");
+	ft_putstr_fd("minishell: export: `", 2);
+	ft_putstr_fd((char *)arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
 	return (1);
 }
 

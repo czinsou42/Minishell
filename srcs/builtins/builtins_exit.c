@@ -41,13 +41,13 @@ int	get_exit_value(const char *str)
 int	return_exit_error(char *arg, int error_type)
 {
 	if (error_type == 1)
-		perror("minishell: exit: too many arguments\n");
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 	else if (error_type == 2)
 	{
-		perror("minishell: exit: ");
+		ft_putstr_fd("minishell: exit: ", 2);
 		if (arg)
 			ft_putstr_fd(arg, 2);
-		perror(": numeric argument required\n");
+		ft_putstr_fd(": numeric argument required\n", 2);
 	}
 	return (2);
 }
