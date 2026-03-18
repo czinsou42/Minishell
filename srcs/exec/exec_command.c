@@ -19,16 +19,12 @@ static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	if (apply_redirections(cmd->redirections, cleanup) == 1)
-	{
 		cleanup_and_exit(cleanup, 1);
-		return ;
-	}
 	path = get_path(cmd->argv[0], *envp);
 	if (!path)
 	{
 		print_command_error(cmd->argv[0], 127);
 		cleanup_and_exit(cleanup, 127);
-		return ;
 	}
 	execve(path, cmd->argv, *envp);
 	print_command_error(cmd->argv[0], 126);
@@ -64,69 +60,37 @@ static int	fork_and_wait(t_command *cmd, char ***envp,
 	return (get_exit_code(status));
 }
 
-static void	skip_empty_args(char **argv)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (argv[i] && !*argv[i])
-	{
-		free(argv[i]);
-		i++;
-	}
-	if (i > 0)
-	{
-		j = 0;
-		while (argv[i + j])
-		{
-			argv[j] = argv[i + j];
-			j++;
-		}
-		argv[j] = NULL;
-	}
-}
-
 int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 {
-	int	saved_stdin;
 	int	saved_stdout;
 	int	ret;
 
-	if (!cmd || !cmd->argv)
+	if (!cmd || !cmd->argv || !cmd->argv[0] || !*cmd->argv[0])
 		return (0);
-	skip_empty_args(cmd->argv);
-	// Exec commandes vides contenant juste des redirections (echo < fichier_non_existant)
+	while (cmd->argv[0] && !*cmd->argv[0])
+		cmd->argv++;
 	if (!cmd->argv[0])
+		return (0);
+	if (is_parent_builtin(cmd->argv[0]))
 	{
-		saved_stdin = dup(STDIN_FILENO);
-		saved_stdout = dup(STDOUT_FILENO);
-		ret = apply_redirections(cmd->redirections, cleanup);
-		dup2(saved_stdin, STDIN_FILENO);
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdin);
-		close(saved_stdout);
-		if (ret)
-			g_exit_status = ret;
-		return (ret);
-	}
-	// Exec normal
-	if (is_parent_builtin(cmd->argv[0]) || is_simple_builtin(cmd->argv[0]))
-	{
-		saved_stdin = dup(STDIN_FILENO);
-		saved_stdout = dup(STDOUT_FILENO);
 		if (apply_redirections(cmd->redirections, cleanup) == 1)
 		{
 			g_exit_status = 1;
-			ret = 1;
+			return (1);
 		}
-		else if (is_parent_builtin(cmd->argv[0]))
-			ret = execute_builtin_parent(cmd, envp, cleanup);
-		else
-			ret = execute_builtin_simple(cmd, envp);
-		dup2(saved_stdin, STDIN_FILENO);
+		return (execute_builtin_parent(cmd, envp, cleanup));
+	}
+	if (is_simple_builtin(cmd->argv[0]))
+	{
+		saved_stdout = dup(STDOUT_FILENO);
+		if (apply_redirections(cmd->redirections, cleanup) == 1)
+		{
+			printf("frdggdf\n");
+			g_exit_status = 1;
+			return (1);
+		}
+		ret = execute_builtin_simple(cmd, envp);
 		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdin);
 		close(saved_stdout);
 		return (ret);
 	}
