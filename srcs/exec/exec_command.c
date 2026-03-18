@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/16 15:48:30 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/18 03:33:24 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,7 @@ static void	restore_parent_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static int	fork_and_wait(t_command *cmd, char ***envp,
-		t_cleanup *cleanup)
+static int	fork_and_wait(t_command *cmd, char ***envp, t_cleanup *cleanup)
 {
 	pid_t	pid;
 	int		status;
@@ -60,17 +59,32 @@ static int	fork_and_wait(t_command *cmd, char ***envp,
 	return (get_exit_code(status));
 }
 
+// static void	close_command_fds(t_command *cmd)
+// {
+//     t_redir *r = cmd->redirections;
+//     while (r)
+//     {
+//         if (r->fd != -1)
+//             close(r->fd);
+//         r = r->next;
+//     }
+//     if (cmd->heredoc_fd != -1)
+//         close(cmd->heredoc_fd);
+// }
+
 int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 {
-	int	saved_stdout;
-	int	ret;
+	int		saved_stdout;
+	int		ret;
+	char	**head_argv;
 
-	if (!cmd || !cmd->argv || !cmd->argv[0] || !*cmd->argv[0])
+	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return (0);
+	head_argv = cmd->argv;
 	while (cmd->argv[0] && !*cmd->argv[0])
 		cmd->argv++;
 	if (!cmd->argv[0])
-		return (0);
+		return ((cmd->argv = head_argv), 0);
 	if (is_parent_builtin(cmd->argv[0]))
 	{
 		if (apply_redirections(cmd->redirections, cleanup) == 1)
@@ -85,13 +99,13 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 		saved_stdout = dup(STDOUT_FILENO);
 		if (apply_redirections(cmd->redirections, cleanup) == 1)
 		{
-			printf("frdggdf\n");
 			g_exit_status = 1;
 			return (1);
 		}
 		ret = execute_builtin_simple(cmd, envp);
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdout);
+		cmd->argv = head_argv;
 		return (ret);
 	}
 	return (fork_and_wait(cmd, envp, cleanup));

@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 14:47:59 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/18 05:42:07 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 void	heredoc_sigint(int sig)
 {
 	(void)sig;
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	g_exit_status = 130;
-	ioctl(STDIN_FILENO, 0x5412, "\n");
 	write(STDOUT_FILENO, "\n", 1);
+
 }
 
 void	setup_heredoc_signals(void)

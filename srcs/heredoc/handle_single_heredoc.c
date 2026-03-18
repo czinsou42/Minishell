@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 12:28:24 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/15 14:07:16 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/18 05:35:39 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup)
 	char	*content;
 
 	g_exit_status = 0;
-	signal(SIGINT, heredoc_sigint);
+	setup_heredoc_signals();
 	signal(SIGQUIT, SIG_IGN);
 	content = read_heredoc_content(delimiter);
 	if (!content || g_exit_status == 130)
@@ -83,7 +83,8 @@ static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup)
 	cleanup_and_exit(cleanup, 0);
 }
 
-static int	fork_heredoc_child(t_token *token, int *pipefd, t_cleanup *cleanup)
+static int	fork_heredoc_child(t_token *token, int *pipefd,
+t_cleanup *cleanup)
 {
 	pid_t	pid;
 
@@ -129,3 +130,4 @@ int	handle_single_heredoc(t_token *token, t_cleanup *cleanup)
 	token->heredoc_fd = pipefd[0];
 	return (0);
 }
+

@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/16 15:11:51 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/18 05:39:56 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-# include <sys/ioctl.h>
 
 extern int				g_exit_status;
 
@@ -249,9 +248,10 @@ int						handle_single_heredoc(t_token *token,
 							t_cleanup *cleanup);
 void					init_cleanup(t_cleanup *cleanup);
 void					cleanup_iteration(t_cleanup *cleanup);
-void					heredoc_sigint(int sig);
 char					*read_full_line(void);
 int						has_unclosed_quote(char *line);
 void					apply_clean(t_token *tokens);
+void					heredoc_sigint(int sig);
+void					setup_heredoc_signals(void);
 
 #endif
