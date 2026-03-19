@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 12:35:07 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/19 14:10:37 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/19 15:18:03 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	handle_next_token(char *line, int *i, t_token **tokens,
 	}
 	else if (handle_word(line, i, tokens) == -1)
 		return (-1);
-	if (no_space && *token_count > 0)
+	if (no_space && *token_count > 0 && token_last(*tokens)->type == TOKEN_WORD)
 		token_last(*tokens)->joined = 1;
 	(*token_count)++;
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/19 14:13:52 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/19 15:15:44 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ static int	fill_argv(char **argv, t_token *tokens, int length)
 	current = tokens;
 	while (current && token_index < length)
 	{
+		//printf("Current token: '%s' (type: %d, quote: %d, joined: %d)\n",
+		//	current->str, current->type, current->quote, current->joined);
 		if (is_invalid_token(current))
 			return (-1);
 		if (is_redirection(current))
