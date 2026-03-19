@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 10:54:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/15 12:45:07 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/19 13:45:56 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,10 @@ int	get_exit_value(const char *str)
 int	return_exit_error(char *arg, int error_type)
 {
 	if (error_type == 1)
+	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+		return (1);
+	}
 	else if (error_type == 2)
 	{
 		ft_putstr_fd("minishell: exit: ", 2);

@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 14:45:57 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/15 12:41:56 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/19 13:45:11 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	builtin_cd(t_command *cmd, char ***envp)
 	if (!getcwd(oldcwd, sizeof(oldcwd)))
 		return (perror("getcwd"), 1);
 	if (cmd->argv[1] && cmd->argv[2])
-		return (ft_putstr_fd("minishell: cd: too many arguments\n", 2), 2);
+		return (ft_putstr_fd("minishell: cd: too many arguments\n", 2), 1);
 	path = get_cd_path(cmd, *envp, &should_free);
 	if (!path)
 		return (1);
