@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   exec_command.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/19 13:43:46 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/19 15:23:49 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int is_dir(char *path)
+{
+    struct stat s;
+    if (stat(path, &s) == 0 && S_ISDIR(s.st_mode))
+        return 1;
+    return 0;
+}
 
 static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
 {
@@ -18,19 +26,45 @@ static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
+	if (!cmd || !cmd->argv || !cmd->argv[0])
+		cleanup_and_exit(cleanup, 0);
 	if (apply_redirections(cmd->redirections, cleanup) == 1)
-	{
 		cleanup_and_exit(cleanup, 1);
-		return ;
+	if (ft_strcmp(cmd->argv[0], ".") == 0)
+	{
+		ft_putstr_fd("minishell: .: filename argument required\n", 2);
+		ft_putstr_fd(".: usage: . filename [arguments]\n", 2);
+		cleanup_and_exit(cleanup, 2);
+	}
+	if (ft_strcmp(cmd->argv[0], "..") == 0)
+	{
+		print_command_error("..", 127);
+		cleanup_and_exit(cleanup, 127);
+	}
+	if (ft_strchr(cmd->argv[0], '/'))
+	{
+		if (is_dir(cmd->argv[0]))
+		{
+			print_command_error(cmd->argv[0], 126);
+			cleanup_and_exit(cleanup, 126);
+		}
+		else if (access(cmd->argv[0], X_OK) != 0)
+		{
+			print_command_error(cmd->argv[0], 126);
+			cleanup_and_exit(cleanup, 126);
+		}
+		execve(cmd->argv[0], cmd->argv, *envp);
+		print_command_error(cmd->argv[0], 126);
+		cleanup_and_exit(cleanup, 126);
 	}
 	path = get_path(cmd->argv[0], *envp);
 	if (!path)
 	{
 		print_command_error(cmd->argv[0], 127);
 		cleanup_and_exit(cleanup, 127);
-		return ;
 	}
 	execve(path, cmd->argv, *envp);
+	free(path);
 	print_command_error(cmd->argv[0], 126);
 	cleanup_and_exit(cleanup, 126);
 }
@@ -47,8 +81,7 @@ static void	restore_parent_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static int	fork_and_wait(t_command *cmd, char ***envp,
-		t_cleanup *cleanup)
+static int	fork_and_wait(t_command *cmd, char ***envp, t_cleanup *cleanup)
 {
 	pid_t	pid;
 	int		status;

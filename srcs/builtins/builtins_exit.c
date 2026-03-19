@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_exit.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 10:54:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/19 13:45:56 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/19 15:25:18 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void close_extra_fds(void)
+{
+    int fd;
+    fd = 3;
+    while (fd < 1024)
+        close(fd++);
+}
 
 int	is_numeric_exit(const char *str)
 {
@@ -64,6 +72,7 @@ int	builtin_exit(t_command *cmd, t_cleanup *cleanup)
 	rl_free_line_state();
 	if (!cmd->argv[1])
 	{
+		close_extra_fds();
 		cleanup_and_exit(cleanup, g_exit_status);
 	}
 	if (!is_numeric_exit(cmd->argv[1]))
@@ -72,6 +81,7 @@ int	builtin_exit(t_command *cmd, t_cleanup *cleanup)
 		return (return_exit_error(NULL, 1));
 	exit_code = get_exit_value(cmd->argv[1]);
 	g_exit_status = exit_code;
+	close_extra_fds();
 	cleanup_and_exit(cleanup, exit_code);
 	return (g_exit_status);
 }
