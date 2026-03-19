@@ -3,14 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   parser_applyredir.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/16 16:09:45 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/19 14:13:52 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static char	*get_redir_filename(t_token *current)
+{
+	char	*result;
+	char	*tmp;
+	t_token	*word;
+
+	word = current->next;
+	result = ft_strdup("");
+	if (!result)
+		return (NULL);
+	while (word && word->type == TOKEN_WORD)
+	{
+		tmp = ft_strjoin(result, word->str);
+		free(result);
+		if (!tmp)
+			return (NULL);
+		result = tmp;
+		if (word->next && word->next->joined)
+			word = word->next;
+		else
+			break ;
+	}
+	return (result);
+}
 
 static t_redir	*init_redir_node(t_token *current)
 {
@@ -22,10 +47,7 @@ static t_redir	*init_redir_node(t_token *current)
 	if (!redir)
 		return (NULL);
 	redir->type = token_to_redir_type(current->type);
-	if (current->next->str)
-		redir->file = ft_strdup(current->next->str);
-	else
-		redir->file = ft_strdup("");
+	redir->file = get_redir_filename(current);
 	if (!redir->file)
 	{
 		free(redir);
@@ -81,10 +103,12 @@ t_redir	*parse_redirections(t_token *tokens, int length)
 	t_token	*current;
 	t_redir	*redir;
 	t_redir	*head;
+	int		i;
 
 	current = tokens;
 	head = NULL;
-	while (current && length--)
+	i = 0;
+	while (current && i < length)
 	{
 		if (is_redirection(current))
 		{
@@ -96,8 +120,21 @@ t_redir	*parse_redirections(t_token *tokens, int length)
 			}
 			redir_add_back(&head, redir);
 			current = current->next;
+			i++;
+			if (current && i < length)
+			{
+				current = current->next;
+				i++;
+				while (current && current->joined && i < length)
+				{
+					current = current->next;
+					i++;
+				}
+			}
+			continue ;
 		}
 		current = current->next;
+		i++;
 	}
 	return (head);
 }

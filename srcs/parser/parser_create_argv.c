@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_create_argv.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/16 15:22:16 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/19 14:13:52 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,17 @@ static t_token	*skip_redirection(t_token *current, int *token_index,
 		{
 			(*token_index)++;
 			current = current->next;
+			while (current && current->joined && *token_index < length)
+			{
+				(*token_index)++;
+				current = current->next;
+			}
 		}
 	}
 	return (current);
 }
 
-static int	add_word(char **argv, int *i, t_token **current)
+static int	add_word(char **argv, int *i, t_token **current, int *token_index)
 {
 	char	*result;
 	char	*tmp;
@@ -58,7 +63,10 @@ static int	add_word(char **argv, int *i, t_token **current)
 			return (1);
 		result = tmp;
 		if ((*current)->next && (*current)->next->joined)
+		{
 			*current = (*current)->next;
+			(*token_index)++;
+		}
 		else
 			break ;
 	}
@@ -86,7 +94,7 @@ static int	fill_argv(char **argv, t_token *tokens, int length)
 		}
 		if (!current)
 			break ;
-		if (add_word(argv, &i, &current))
+		if (add_word(argv, &i, &current, &token_index))
 			return (-1);
 		token_index++;
 		current = current->next;

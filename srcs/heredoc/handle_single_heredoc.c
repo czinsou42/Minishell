@@ -3,14 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   handle_single_heredoc.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 12:28:24 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/18 05:35:39 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/19 14:13:54 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static char	*get_heredoc_delimiter(t_token *current)
+{
+	char	*result;
+	char	*tmp;
+	t_token	*word;
+
+	word = current->next;
+	result = ft_strdup("");
+	if (!result)
+		return (NULL);
+	while (word && word->type == TOKEN_WORD)
+	{
+		tmp = ft_strjoin(result, word->str);
+		free(result);
+		if (!tmp)
+			return (NULL);
+		result = tmp;
+		if (word->next && word->next->joined)
+			word = word->next;
+		else
+			break ;
+	}
+	return (result);
+}
 
 static char	*read_heredoc_line(char *delimiter, char *buffer)
 {
@@ -69,6 +94,7 @@ static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup)
 	setup_heredoc_signals();
 	signal(SIGQUIT, SIG_IGN);
 	content = read_heredoc_content(delimiter);
+	free(delimiter);
 	if (!content || g_exit_status == 130)
 	{
 		close(write_fd);
@@ -87,6 +113,7 @@ static int	fork_heredoc_child(t_token *token, int *pipefd,
 t_cleanup *cleanup)
 {
 	pid_t	pid;
+	char	*delimiter;
 
 	pid = fork();
 	if (pid == -1)
@@ -99,7 +126,8 @@ t_cleanup *cleanup)
 	if (pid == 0)
 	{
 		close(pipefd[0]);
-		heredoc_child(token->next->str, pipefd[1], cleanup);
+		delimiter = get_heredoc_delimiter(token);
+		heredoc_child(delimiter, pipefd[1], cleanup);
 	}
 	return (pid);
 }
@@ -130,4 +158,3 @@ int	handle_single_heredoc(t_token *token, t_cleanup *cleanup)
 	token->heredoc_fd = pipefd[0];
 	return (0);
 }
-

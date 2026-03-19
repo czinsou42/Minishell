@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_command_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/16 16:35:35 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/19 14:13:52 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,28 @@ int	count_tokens_word(t_token *token, int length)
 		if (is_redirection(current))
 		{
 			current = current->next;
-			if (current && i++ < length)
-				current = current->next;
 			i++;
+			if (current && i < length)
+			{
+				current = current->next;
+				i++;
+				while (current && current->joined && i < length)
+				{
+					current = current->next;
+					i++;
+				}
+			}
 			continue ;
 		}
 		if (current->type == TOKEN_WORD)
+		{
 			count++;
+			while (current->next && current->next->joined && i + 1 < length)
+			{
+				current = current->next;
+				i++;
+			}
+		}
 		current = current->next;
 		i++;
 	}
