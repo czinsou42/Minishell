@@ -6,35 +6,50 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 10:54:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/19 15:25:18 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 14:18:20 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void close_extra_fds(void)
+static void	close_extra_fds(void)
 {
-    int fd;
-    fd = 3;
-    while (fd < 1024)
-        close(fd++);
+	int	fd;
+
+	fd = 3;
+	while (fd < 1024)
+		close(fd++);
 }
 
 int	is_numeric_exit(const char *str)
 {
-	int	i;
+	int			i;
+	int			sign;
+	long long	result;
 
+	sign = 1;
+	result = 0;
 	if (!str || !str[0])
 		return (0);
 	i = 0;
 	if (str[i] == '+' || str[i] == '-')
+	{
+		if (str[i] == '-')
+			sign = -1;
 		i++;
+	}
+	if (!str[i])
+		return (0);
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
 			return (0);
+		if (result > (LLONG_MAX - (str[i] - '0')) / 10)
+			return (0);
+		result = result * 10 + (str[i] - '0');
 		i++;
 	}
+	result *= sign;
 	return (1);
 }
 
@@ -76,7 +91,11 @@ int	builtin_exit(t_command *cmd, t_cleanup *cleanup)
 		cleanup_and_exit(cleanup, g_exit_status);
 	}
 	if (!is_numeric_exit(cmd->argv[1]))
-		return (return_exit_error(cmd->argv[1], 2));
+	{
+		return_exit_error(cmd->argv[1], 2);
+		close_extra_fds();
+		cleanup_and_exit(cleanup, 2);
+	}
 	if (cmd->argv[2])
 		return (return_exit_error(NULL, 1));
 	exit_code = get_exit_value(cmd->argv[1]);

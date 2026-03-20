@@ -6,18 +6,19 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/19 15:23:49 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 13:42:50 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int is_dir(char *path)
+static int	is_dir(char *path)
 {
-    struct stat s;
-    if (stat(path, &s) == 0 && S_ISDIR(s.st_mode))
-        return 1;
-    return 0;
+	struct stat	s;
+
+	if (stat(path, &s) == 0 && S_ISDIR(s.st_mode))
+		return (1);
+	return (0);
 }
 
 static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
@@ -129,23 +130,34 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	if (!cmd || !cmd->argv)
 		return (0);
 	skip_empty_args(cmd->argv);
+	if (cmd->argv[0])
+		printf("DEBUG: cmd->argv[0] = [%s]\n", cmd->argv[0]);
+	else
+		printf("DEBUG: cmd->argv[0] is NULL\n");
 	// Exec commandes vides contenant juste des redirections (echo < fichier_non_existant)
 	if (!cmd->argv[0])
 	{
-		saved_stdin = dup(STDIN_FILENO);
-		saved_stdout = dup(STDOUT_FILENO);
-		ret = apply_redirections(cmd->redirections, cleanup);
-		dup2(saved_stdin, STDIN_FILENO);
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdin);
-		close(saved_stdout);
-		if (ret)
-			g_exit_status = ret;
-		return (ret);
+		if (cmd->redirections)
+		{
+			saved_stdin = dup(STDIN_FILENO);
+			saved_stdout = dup(STDOUT_FILENO);
+			ret = apply_redirections(cmd->redirections, cleanup);
+			dup2(saved_stdin, STDIN_FILENO);
+			dup2(saved_stdout, STDOUT_FILENO);
+			close(saved_stdin);
+			close(saved_stdout);
+			if (ret)
+				g_exit_status = ret;
+			return (ret);
+		}
+		print_command_error("", 127);
+		g_exit_status = 127;
+		return (127);
 	}
 	// Exec normal
 	if (is_parent_builtin(cmd->argv[0]) || is_simple_builtin(cmd->argv[0]))
 	{
+		printf("DEBUG BEFORE BUILTIN: argv[0] = [%s]\n", cmd->argv[0]);
 		saved_stdin = dup(STDIN_FILENO);
 		saved_stdout = dup(STDOUT_FILENO);
 		if (apply_redirections(cmd->redirections, cleanup) == 1)
