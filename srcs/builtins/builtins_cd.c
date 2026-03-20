@@ -3,38 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 14:45:57 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/19 13:45:11 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/20 15:50:11 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	update_env_forcd(char ***envp, char *name, char *value)
-{
-	int		i;
-	int		len;
-	char	*new_var;
-
-	len = ft_strlen(name);
-	i = 0;
-	while ((*envp)[i])
-	{
-		if (!ft_strncmp((*envp)[i], name, len) && (*envp)[i][len] == '=')
-		{
-			free((*envp)[i]);
-			new_var = ft_strjoin3(name, "=", value);
-			if (!new_var)
-				return (1);
-			(*envp)[i] = new_var;
-			return (0);
-		}
-		i++;
-	}
-	return (env_add(envp, name, value));
-}
 
 static int	set_pwd_oldpwd(char ***envp, char *oldcwd)
 {
@@ -91,13 +67,6 @@ static char	*get_cd_path(t_command *cmd, char **envp, int *should_free)
 	else
 		path = cmd->argv[1];
 	return (path);
-}
-
-int print_cd_error(char *path)
-{
-	ft_putstr_fd("minishell: cd: ", 2);
-	perror(path);
-	return (1);
 }
 
 int	builtin_cd(t_command *cmd, char ***envp)

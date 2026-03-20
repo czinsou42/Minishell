@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 10:54:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/20 14:18:20 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 15:48:57 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,38 +19,6 @@ static void	close_extra_fds(void)
 	fd = 3;
 	while (fd < 1024)
 		close(fd++);
-}
-
-int	is_numeric_exit(const char *str)
-{
-	int			i;
-	int			sign;
-	long long	result;
-
-	sign = 1;
-	result = 0;
-	if (!str || !str[0])
-		return (0);
-	i = 0;
-	if (str[i] == '+' || str[i] == '-')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	if (!str[i])
-		return (0);
-	while (str[i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (0);
-		if (result > (LLONG_MAX - (str[i] - '0')) / 10)
-			return (0);
-		result = result * 10 + (str[i] - '0');
-		i++;
-	}
-	result *= sign;
-	return (1);
 }
 
 int	get_exit_value(const char *str)
