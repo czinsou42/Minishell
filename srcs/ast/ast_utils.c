@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 11:22:37 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/16 15:42:27 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 15:50:55 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	free_ast(t_node *node)
 	{
 		if (node->command->argv)
 			ft_free_split(node->command->argv);
-
 		if (node->command->redirections)
 			free_redirections(node->command->redirections);
 		free(node->command);

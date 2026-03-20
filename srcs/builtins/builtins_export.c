@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 17:23:33 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/16 14:43:21 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 15:47:45 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,6 @@ static void	print_all_exports(char **envp)
 	while (sorted[++i])
 		print_export_line(sorted[i]);
 	free(sorted);
-}
-
-int	print_error_export(const char *arg)
-{
-	ft_putstr_fd("minishell: export: `", 2);
-	ft_putstr_fd((char *)arg, 2);
-	ft_putstr_fd("': not a valid identifier\n", 2);
-	return (1);
 }
 
 int	handle_export_arg(char *arg, char ***env)

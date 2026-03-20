@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 15:52:54 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:31:47 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,7 +253,9 @@ int						has_unclosed_quote(char *line);
 void					apply_clean(t_token *tokens);
 void					heredoc_sigint(int sig);
 void					setup_heredoc_signals(void);
-void					split_token_on_spaces(t_token *token);
+void									split_token_on_spaces(t_token *token);
+int						print_cd_error(char *path);
+int						print_error_export(const char *arg);
 char					*get_heredoc_delimiter(t_token *current);
 
 #endif
