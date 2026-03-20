@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 16:15:04 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:36:07 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,11 @@ static int	add_word(char **argv, int *i, t_token **current, int *token_index)
 		*current = (*current)->next;
 		(*token_index)++;
 	}
-	if (!result)
-		return (1);
-	if (*result == '\0' && !is_quoted)
+	if (result && *result == '\0' && !is_quoted)
 		free(result);
-	else
+	else if (result)
 		argv[(*i)++] = result;
-	return (0);
+	return (result == NULL);
 }
 
 static int	fill_argv(char **argv, t_token *tokens, int length)
