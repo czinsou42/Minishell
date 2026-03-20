@@ -6,7 +6,7 @@
 #    By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2026/03/16 14:56:08 by czinsou          ###   ########.fr        #
+#    Updated: 2026/03/20 15:57:29 by czinsou          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,6 +55,7 @@ BUILTINS_SRCS = srcs/builtins/builtins_cd.c \
 				srcs/builtins/builtins_exit.c \
 				srcs/builtins/builtins_simple.c \
 				srcs/builtins/builtins.c \
+				srcs/builtins/builtins_utils2.c \
 
 HEREDOC_SRCS = srcs/heredoc/heredoc.c \
 			   srcs/heredoc/handle_single_heredoc.c \
