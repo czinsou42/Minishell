@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:28:47 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 14:56:23 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 15:10:12 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
 	free(tokens->str);
 	tokens->str = expanded_str;
 	if (tokens->quote == NO_QUOTE)
-		split_token_on_spaces(tokens);  // ← word splitting
+		split_token_on_spaces(tokens);
 	if (tokens->quote == NO_QUOTE && ft_strchr(tokens->str, '*'))
 		expand_wildcard_token(tokens);
 	apply_clean(tokens);
