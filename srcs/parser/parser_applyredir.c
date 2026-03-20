@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/19 14:13:52 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:11:11 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,22 +59,6 @@ static t_redir	*init_redir_node(t_token *current)
 	return (redir);
 }
 
-static int	apply_heredoc_content(t_redir *redir, t_token *current)
-{
-	if (!redir || !current)
-		return (0);
-	if (current->type == TOKEN_REDIR_HEREDOC)
-	{
-		if (current->heredoc_content)
-			redir->heredoc_content = ft_strdup(current->heredoc_content);
-		else
-			redir->heredoc_content = ft_strdup("");
-		if (!redir->heredoc_content)
-			return (0);
-	}
-	return (1);
-}
-
 static t_redir	*create_redir_node(t_token *current)
 {
 	t_redir	*redir;
@@ -87,53 +71,62 @@ static t_redir	*create_redir_node(t_token *current)
 			print_unexpected_token();
 		return (NULL);
 	}
-	if (current->type != TOKEN_REDIR_HEREDOC)
-		return (init_redir_node(current));
 	redir = init_redir_node(current);
 	if (!redir)
 		return (NULL);
-	redir->heredoc_fd = current->heredoc_fd;
-	if (!apply_heredoc_content(redir, current))
-		return (free(redir->file), free(redir), NULL);
+	if (current->type == TOKEN_REDIR_HEREDOC)
+	{
+		redir->heredoc_fd = current->heredoc_fd;
+		if (current->heredoc_content)
+			redir->heredoc_content = ft_strdup(current->heredoc_content);
+		else
+			redir->heredoc_content = ft_strdup("");
+		if (!redir->heredoc_content)
+			return (free(redir->file), free(redir), NULL);
+	}
 	return (redir);
+}
+
+static t_token	*skip_redir_tokens(t_token *current, int *i, int length)
+{
+	current = current->next;
+	(*i)++;
+	if (current && *i < length)
+	{
+		current = current->next;
+		(*i)++;
+		while (current && current->joined && *i < length)
+		{
+			current = current->next;
+			(*i)++;
+		}
+	}
+	return (current);
 }
 
 t_redir	*parse_redirections(t_token *tokens, int length)
 {
-	t_token	*current;
 	t_redir	*redir;
 	t_redir	*head;
 	int		i;
 
-	current = tokens;
 	head = NULL;
 	i = 0;
-	while (current && i < length)
+	while (tokens && i < length)
 	{
-		if (is_redirection(current))
+		if (is_redirection(tokens))
 		{
-			redir = create_redir_node(current);
+			redir = create_redir_node(tokens);
 			if (!redir)
 			{
 				free_redirections(head);
 				return (NULL);
 			}
 			redir_add_back(&head, redir);
-			current = current->next;
-			i++;
-			if (current && i < length)
-			{
-				current = current->next;
-				i++;
-				while (current && current->joined && i < length)
-				{
-					current = current->next;
-					i++;
-				}
-			}
+			tokens = skip_redir_tokens(tokens, &i, length);
 			continue ;
 		}
-		current = current->next;
+		tokens = tokens->next;
 		i++;
 	}
 	return (head);

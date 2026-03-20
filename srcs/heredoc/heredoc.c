@@ -3,14 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/18 05:42:07 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 15:53:03 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*get_heredoc_delimiter(t_token *current)
+{
+	char	*result;
+	char	*tmp;
+	t_token	*word;
+
+	word = current->next;
+	result = ft_strdup("");
+	if (!result)
+		return (NULL);
+	while (word && word->type == TOKEN_WORD)
+	{
+		tmp = ft_strjoin(result, word->str);
+		free(result);
+		if (!tmp)
+			return (NULL);
+		result = tmp;
+		if (word->next && word->next->joined)
+			word = word->next;
+		else
+			break ;
+	}
+	return (result);
+}
 
 void	heredoc_sigint(int sig)
 {
@@ -18,7 +43,6 @@ void	heredoc_sigint(int sig)
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	g_exit_status = 130;
 	write(STDOUT_FILENO, "\n", 1);
-
 }
 
 void	setup_heredoc_signals(void)
@@ -34,7 +58,7 @@ void	setup_heredoc_signals(void)
 
 int	process_heredoc(t_token *tokens, t_cleanup *cleanup)
 {
-	t_token *current;
+	t_token	*current;
 
 	current = tokens;
 	while (current)

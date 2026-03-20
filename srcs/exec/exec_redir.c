@@ -3,43 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   exec_redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 13:58:04 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/15 17:13:36 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 16:29:33 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static int	apply_redirections_get_return(t_redir *redir, t_cleanup *cleanup)
+{
+	if (redir->type == REDIR_IN)
+		return (apply_in(redir, cleanup));
+	else if (redir->type == REDIR_OUT)
+		return (apply_out(redir, cleanup));
+	else if (redir->type == REDIR_APPEND)
+		return (apply_append(redir, cleanup));
+	else if (redir->type == REDIR_HEREDOC)
+		return (apply_heredoc(redir, cleanup));
+	return (0);
+}
+
 int	apply_redirections(t_redir *redir, t_cleanup *cleanup)
 {
 	t_redir	*current;
 
-	(void)cleanup;
 	current = redir;
 	while (current)
 	{
-		if (current->type == REDIR_IN)
-		{
-			if (apply_in(current, cleanup))
-				return (1);
-		}
-		else if (current->type == REDIR_OUT)
-		{
-			if (apply_out(current, cleanup))
-				return (1);
-		}
-		else if (current->type == REDIR_APPEND)
-		{
-			if (apply_append(current, cleanup))
-				return (1);
-		}
-		else if (current->type == REDIR_HEREDOC)
-		{
-			if (apply_heredoc(current, cleanup))
-				return (1);
-		}
+		if (apply_redirections_get_return(current, cleanup) == 1)
+			return (1);
 		current = current->next;
 	}
 	return (0);

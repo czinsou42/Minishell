@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:28:47 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 15:10:12 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 15:50:44 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	expand_heredoc_content(t_expand_tokens *expand_tokens,
 	}
 }
 
-static void expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
+static void	expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
 {
 	char	*expanded_str;
 

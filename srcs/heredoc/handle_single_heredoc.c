@@ -6,36 +6,11 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 12:28:24 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/19 14:13:54 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/20 15:52:59 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static char	*get_heredoc_delimiter(t_token *current)
-{
-	char	*result;
-	char	*tmp;
-	t_token	*word;
-
-	word = current->next;
-	result = ft_strdup("");
-	if (!result)
-		return (NULL);
-	while (word && word->type == TOKEN_WORD)
-	{
-		tmp = ft_strjoin(result, word->str);
-		free(result);
-		if (!tmp)
-			return (NULL);
-		result = tmp;
-		if (word->next && word->next->joined)
-			word = word->next;
-		else
-			break ;
-	}
-	return (result);
-}
 
 static char	*read_heredoc_line(char *delimiter, char *buffer)
 {

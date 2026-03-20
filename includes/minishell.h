@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 14:57:40 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 15:52:54 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,6 +253,7 @@ int						has_unclosed_quote(char *line);
 void					apply_clean(t_token *tokens);
 void					heredoc_sigint(int sig);
 void					setup_heredoc_signals(void);
-void	split_token_on_spaces(t_token *token);
+void					split_token_on_spaces(t_token *token);
+char					*get_heredoc_delimiter(t_token *current);
 
 #endif

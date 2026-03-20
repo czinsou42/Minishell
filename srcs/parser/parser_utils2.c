@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/19 13:30:43 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 16:07:56 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,22 @@ char	*remove_quote(char *str)
 			res[j++] = str[i++];
 	}
 	return ((res[j] = '\0'), res);
+}
+
+int	print_parser_redir_error(t_token *token)
+{
+	if (token->type != TOKEN_WORD)
+	{
+		ft_putstr_fd("minishell :syntax error near unexpected token `", 2);
+		ft_putstr_fd(token->str, 2);
+		ft_putstr_fd("'\n", 2);
+		return (-1);
+	}
+	return (0);
+}
+
+void	print_unexpected_token(void)
+{
+	ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n",
+		2);
 }

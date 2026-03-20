@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 09:08:43 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/19 15:15:44 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:15:04 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,26 +54,21 @@ static int	add_word(char **argv, int *i, t_token **current, int *token_index)
 	if ((*current)->type != TOKEN_WORD)
 		return (0);
 	result = ft_strdup("");
-	if (!result)
-		return (1);
 	is_quoted = 0;
-	while (*current && (*current)->type == TOKEN_WORD)
+	while (*current && (*current)->type == TOKEN_WORD && result)
 	{
 		if ((*current)->quote != NO_QUOTE)
 			is_quoted = 1;
 		tmp = ft_strjoin(result, (*current)->str);
 		free(result);
-		if (!tmp)
-			return (1);
 		result = tmp;
-		if ((*current)->next && (*current)->next->joined)
-		{
-			*current = (*current)->next;
-			(*token_index)++;
-		}
-		else
+		if (!result || !(*current)->next || !(*current)->next->joined)
 			break ;
+		*current = (*current)->next;
+		(*token_index)++;
 	}
+	if (!result)
+		return (1);
 	if (*result == '\0' && !is_quoted)
 		free(result);
 	else
@@ -92,8 +87,6 @@ static int	fill_argv(char **argv, t_token *tokens, int length)
 	current = tokens;
 	while (current && token_index < length)
 	{
-		//printf("Current token: '%s' (type: %d, quote: %d, joined: %d)\n",
-		//	current->str, current->type, current->quote, current->joined);
 		if (is_invalid_token(current))
 			return (-1);
 		if (is_redirection(current))
