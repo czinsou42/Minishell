@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_command.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 17:29:02 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 14:44:11 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 15:13:08 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,12 @@ static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
 		print_command_error("..", 127);
 		cleanup_and_exit(cleanup, 127);
 	}
+	path = get_path(cmd->argv[0], *envp);
+	if (!path)
+	{
+		print_command_error(cmd->argv[0], 127);
+		cleanup_and_exit(cleanup, 127);
+	}
 	if (ft_strchr(cmd->argv[0], '/'))
 	{
 		if (is_dir(cmd->argv[0]))
@@ -57,12 +63,6 @@ static void	exec_child(t_command *cmd, char ***envp, t_cleanup *cleanup)
 		execve(cmd->argv[0], cmd->argv, *envp);
 		print_command_error(cmd->argv[0], 126);
 		cleanup_and_exit(cleanup, 126);
-	}
-	path = get_path(cmd->argv[0], *envp);
-	if (!path)
-	{
-		print_command_error(cmd->argv[0], 127);
-		cleanup_and_exit(cleanup, 127);
 	}
 	execve(path, cmd->argv, *envp);
 	free(path);
@@ -98,29 +98,6 @@ static int	fork_and_wait(t_command *cmd, char ***envp, t_cleanup *cleanup)
 	return (get_exit_code(status));
 }
 
-static void	skip_empty_args(char **argv)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (argv[i] && !*argv[i])
-	{
-		free(argv[i]);
-		i++;
-	}
-	if (i > 0)
-	{
-		j = 0;
-		while (argv[i + j])
-		{
-			argv[j] = argv[i + j];
-			j++;
-		}
-		argv[j] = NULL;
-	}
-}
-
 int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 {
 	int	saved_stdin;
@@ -129,7 +106,6 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 
 	if (!cmd || !cmd->argv)
 		return (0);
-	skip_empty_args(cmd->argv);
 	// Exec commandes vides contenant juste des redirections (echo < fichier_non_existant)
 	if (!cmd->argv[0])
 	{
@@ -146,9 +122,7 @@ int	exec_command(t_command *cmd, char ***envp, t_cleanup *cleanup)
 				g_exit_status = ret;
 			return (ret);
 		}
-		print_command_error("", 127);
-		g_exit_status = 127;
-		return (127);
+		return (0);
 	}
 	// Exec normal
 	if (is_parent_builtin(cmd->argv[0]) || is_simple_builtin(cmd->argv[0]))

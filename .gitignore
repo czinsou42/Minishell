@@ -1,0 +1,22 @@
+# Compiled binaries
+*.out
+*.o
+*.a
+*.so
+minishell
+
+# Build directories
+obj/
+bin/
+
+# Debugging and IDEs
+*.dSYM/
+.vscode/
+.idea/
+.DS_Store
+
+# Temporary files
+*.swp
+*.swo
+*~
+*.log

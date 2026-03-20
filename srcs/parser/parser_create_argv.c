@@ -49,14 +49,18 @@ static int	add_word(char **argv, int *i, t_token **current, int *token_index)
 {
 	char	*result;
 	char	*tmp;
+	int		is_quoted;
 
 	if ((*current)->type != TOKEN_WORD)
 		return (0);
 	result = ft_strdup("");
 	if (!result)
 		return (1);
+	is_quoted = 0;
 	while (*current && (*current)->type == TOKEN_WORD)
 	{
+		if ((*current)->quote != NO_QUOTE)
+			is_quoted = 1;
 		tmp = ft_strjoin(result, (*current)->str);
 		free(result);
 		if (!tmp)
@@ -70,7 +74,10 @@ static int	add_word(char **argv, int *i, t_token **current, int *token_index)
 		else
 			break ;
 	}
-	argv[(*i)++] = result;
+	if (*result == '\0' && !is_quoted)
+		free(result);
+	else
+		argv[(*i)++] = result;
 	return (0);
 }
 
