@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:28:47 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 13:34:41 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 14:56:23 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	expand_heredoc_content(t_expand_tokens *expand_tokens,
 	}
 }
 
-static void	expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
+static void expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
 {
 	char	*expanded_str;
 
@@ -50,6 +50,8 @@ static void	expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
 		return (free(expanded_str));
 	free(tokens->str);
 	tokens->str = expanded_str;
+	if (tokens->quote == NO_QUOTE)
+		split_token_on_spaces(tokens);  // ← word splitting
 	if (tokens->quote == NO_QUOTE && ft_strchr(tokens->str, '*'))
 		expand_wildcard_token(tokens);
 	apply_clean(tokens);
@@ -58,14 +60,16 @@ static void	expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
 void	expander(t_token *tokens, char **envp)
 {
 	t_token			*current;
+	t_token			*next;
 	t_expand_tokens	expand_tokens;
 
 	current = tokens;
 	expand_tokens.envp = envp;
 	while (current)
 	{
+		next = current->next;
 		expand_token(&expand_tokens, current);
-		current = current->next;
+		current = next;
 	}
 	return ;
 }

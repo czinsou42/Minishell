@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/18 05:39:56 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 14:57:40 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,5 +253,6 @@ int						has_unclosed_quote(char *line);
 void					apply_clean(t_token *tokens);
 void					heredoc_sigint(int sig);
 void					setup_heredoc_signals(void);
+void	split_token_on_spaces(t_token *token);
 
 #endif

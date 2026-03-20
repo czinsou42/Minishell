@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 16:57:07 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/19 13:32:19 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/20 14:27:16 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ static void	execute_pipeline_cmd(t_command *cmd, t_cleanup *cleanup,
 	path = get_path(cmd->argv[0], env);
 	if (!path)
 	{
-		write(2, "PIPE\n", 6);
 		print_command_error(cmd->argv[0], 127);
 		cleanup_and_exit(cleanup, 127);
 	}
