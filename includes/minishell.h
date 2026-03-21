@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 16:32:55 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/21 13:35:53 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,6 @@ int						is_simple_builtin(const char *cmd);
 void					setup_signals(void);
 void					setup_child_pipe(int prev_fd, int *pipefd,
 							int has_next);
-void					expand_wildcard_token(t_token *token);
 int						handle_single_heredoc(t_token *token,
 							t_cleanup *cleanup);
 void					init_cleanup(t_cleanup *cleanup);
