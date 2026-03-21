@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_exit.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 10:54:13 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/20 15:48:57 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/21 13:53:46 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ int	builtin_exit(t_command *cmd, t_cleanup *cleanup)
 
 	printf("exit\n");
 	rl_clear_history();
-	rl_free_line_state();
 	if (!cmd->argv[1])
 	{
 		close_extra_fds();
