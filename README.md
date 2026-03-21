@@ -4,7 +4,7 @@
 
 **Le code est modulable**
 
-Chaque dossier correspond à une séquances du minishell, on peut donc parler de programmation modulaire. J'ai fait ce choix pour avoir une meilleure lisibilité de mon code et surtout une meilleure scalabilité, une feature peut être implémenté et testé sans problème. Ensuite, pour isoler un bug et le traiter j'ai crée différente règle à mon makefile pour tester un module __make test_ast__; __make test_parser__ ... Ainsi il est plus facile de traiter et identifier d'où peur provenir le bug.
+Chaque dossier correspond à une séquances du minishell, on peut donc parler de programmation modulaire. Ce choix est fait pour avoir une meilleure lisibilité de mon code et surtout une meilleure scalabilité, une feature peut être implémenté et testé sans problème.
 
 Pour rajouter un module, il suffit de créer un nouveau dossier, une fois le code terminé, on rajoute les sources du module à une règle du makefile spécifique au module et sans oublier de rajouter le tout à la règle principale une fois la feature opérationnelle.
 
@@ -28,7 +28,6 @@ TEST_FEATURE_OBJS = $(TEST_FEATURE_SRCS:.c=.o)
 
 Chaque dossier comporter un fichier .c du même nom que le dossier, c'est ce fichier qui contient la fonction princpale et donc la logique principal du module, tout le reste sont des fichiers utils.
 
-Il est nécessaire de suivre cettre strucutre qui permet une lisibilité optimale du projet en cas d'ajout.
 
 ## Flow du minishell
 
@@ -48,7 +47,7 @@ Dans le .h il est possible de retrouver les enum ainsi que les structures utilis
 
 ### 2. Heredoc
 
-Dans ce module on s'occupe du cas où l'on tombe sur un token de type `TOKEN_REDIR_HEREDOC`. Le but ici et d'afficher un prompt tant que l'utilisateur n'a pas taper l'EOF qui correspond à la string juste après le `<<`. Il est crucial de le faire à ce moment là car il faut prendre en compte les variables à expand, on reviendra sur ce point juste après. On stock donc au fur et à mesure que l'utilisateur écrit et une fois que l'utilisateur écris exactement la même chose que le délimiteur, on s'arrête et un passe au heredoc suivant s'il y en a un.
+Dans ce module on s'occupe du cas où l'on tombe sur un token de type `TOKEN_REDIR_HEREDOC`. Le but ici et d'afficher un prompt tant que l'utilisateur n'a pas taper l'EOF qui correspond à la string juste après le `<<`. Il est crucial de le faire à ce moment là car il faut prendre en compte les variables à expand. On stock donc au fur et à mesure que l'utilisateur écrit et une fois que l'utilisateur écris exactement la même chose que le délimiteur, on s'arrête et un passe au heredoc suivant s'il y en a un.
 
 ### 3. Expand
 
@@ -158,7 +157,6 @@ Cette approche garantit 0 bytes de leaks, même dans les processus enfants qui t
 
 ## Fonctionnalités implémentées
 
-### ✅ Complètement terminé
 - **Lexer** : Tokenisation avec gestion des quotes et opérateurs
 - **Heredocs** : Lecture interactive, expansion, exécution par pipe
 - **Expander** : Remplacement des variables d'environnement
@@ -166,15 +164,15 @@ Cette approche garantit 0 bytes de leaks, même dans les processus enfants qui t
 - **Exécution** : fork/execve avec gestion des codes de retour
 - **Redirections** : <, >, >> fonctionnels
 - **Gestion mémoire** : 0 leaks Valgrind (definitely lost ET still reachable)
-
-### ⚠️ En cours
-- **Pipes** : Structure définie, éxecution à implémenter
-
-### ❌ À faire
+- **Pipes** : Structure définie, et éxecution implémenter
 - **Builtins** : echo, cd, pwd, export, unset, env, exit
 - **Signaux** : Ctrl+C, Ctrl+D, Ctrl+\
 - **Variable $?** : Code de retour de la dernière commande
-- **Wildcards** : Expansion de * si requis par le sujet
+
+
+## Fonctionnalités non implémentées
+
+- **Wildcards** : Expansion de *
 
 ## Compilation et utilisation
 
@@ -190,49 +188,9 @@ Pour lancer le minishell :
 
 Pour tester avec Valgrind (vérification des leaks) :
 ```bash
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./minishell
+valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --track-origins=yes --trace-children=yes --trace-children-skip='/bin/*,/usr/bin/*,/usr/local/bin/*' --suppressions=readline.supp -s ./minishell
 ```
-
-## Tests modulaires
-
-Le Makefile contient des règles pour tester chaque module isolément :
-```bash
-make test_lexer    # Teste uniquement le lexer
-make test_parser   # Teste uniquement le parser
-make test_expand   # Teste uniquement l'expander
-```
-
-Ces tests permettent d'identifier rapidement d'où provient un bug sans avoir à lancer le minishell complet.
-
-## Instructions pour continuer le développement
-
-### Prochaine étape : Implémentation des pipes
-
-Les pipes nécessitent de créer un `pipe()` système, lancer deux processus en parallèle, et connecter la sortie du premier à l'entrée du second. La fonction `exec_pipeline` existe déjà dans le header mais n'est pas implémentée.
-
-**Ce qu'il faut faire :**
-1. Décommenter la ligne dans `exec_ast` qui appelle `exec_pipeline`
-2. Implémenter `exec_pipeline` en suivant la logique des heredocs (qui utilisent déjà des pipes)
-3. Gérer la fermeture correcte des descripteurs de fichiers
-4. Propager la structure cleanup pour éviter les leaks
-
-### Ensuite : Les builtins
-
-Les builtins sont des commandes executées directement par le shell sans créer de processus enfant. Il faudra détecter si la commande est un builtin avant de faire `fork()`, et si oui, executer la fonction correspondante directement.
-
-**Liste des builtins à implémenter :**
-- `echo` avec option -n
-- `cd` avec chemin relatif/absolu
-- `pwd` sans options
-- `export` pour ajouter/modifier des variables d'environnement
-- `unset` pour supprimer des variables d'environnement
-- `env` pour afficher l'environnement
-- `exit` avec code de retour optionnel
-
-### Enfin : Signaux et finitions
-
-La gestion des signaux (SIGINT pour Ctrl+C notamment) nécessite d'utiliser `signal()` ou `sigaction()`. Attention à bien gérer les signaux dans le processus parent ET dans les processus enfants.
 
 ## Auteurs
 
-Projet réalisé par **amwahab et czinsou** dans le cadre du cursus 42.
+Projet réalisé par **czinsou et  lebertau** dans le cadre du cursus 42.
