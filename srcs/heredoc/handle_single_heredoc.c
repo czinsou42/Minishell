@@ -6,69 +6,21 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 12:28:24 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/20 15:52:59 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/21 14:22:29 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*read_heredoc_line(char *delimiter, char *buffer)
-{
-	char	*line;
-	char	*line_with_newline;
-	char	*joined_buffer;
-
-	line = readline("> ");
-	if (g_exit_status == 130)
-	{
-		if (line)
-			free(line);
-		return (free(buffer), NULL);
-	}
-	if (!line)
-		return (free(buffer), NULL);
-	if (ft_strcmp(line, delimiter) == 0)
-		return (free(line), buffer);
-	line_with_newline = ft_strjoin(line, "\n");
-	if (!line_with_newline)
-		return (free(buffer), free(line), NULL);
-	joined_buffer = ft_strjoin(buffer, line_with_newline);
-	if (!joined_buffer)
-		return (free(buffer), free(line_with_newline), free(line), NULL);
-	free(buffer);
-	free(line_with_newline);
-	free(line);
-	return (joined_buffer);
-}
-
-static char	*read_heredoc_content(char *delimiter)
-{
-	char	*buffer;
-	char	*new_buffer;
-
-	buffer = ft_strdup("");
-	if (!buffer)
-		return (NULL);
-	while (1)
-	{
-		new_buffer = read_heredoc_line(delimiter, buffer);
-		if (!new_buffer)
-			return (NULL);
-		if (new_buffer == buffer)
-			break ;
-		buffer = new_buffer;
-	}
-	return (buffer);
-}
-
-static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup)
+static void	heredoc_child(char *delimiter, int write_fd, t_cleanup *cleanup,
+		int expand_content)
 {
 	char	*content;
 
 	g_exit_status = 0;
 	setup_heredoc_signals();
 	signal(SIGQUIT, SIG_IGN);
-	content = read_heredoc_content(delimiter);
+	content = read_heredoc_content(delimiter, cleanup->envp, expand_content);
 	free(delimiter);
 	if (!content || g_exit_status == 130)
 	{
@@ -89,7 +41,9 @@ t_cleanup *cleanup)
 {
 	pid_t	pid;
 	char	*delimiter;
+	int		expand_content;
 
+	expand_content = should_expand_heredoc(token);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -102,7 +56,7 @@ t_cleanup *cleanup)
 	{
 		close(pipefd[0]);
 		delimiter = get_heredoc_delimiter(token);
-		heredoc_child(delimiter, pipefd[1], cleanup);
+		heredoc_child(delimiter, pipefd[1], cleanup, expand_content);
 	}
 	return (pid);
 }

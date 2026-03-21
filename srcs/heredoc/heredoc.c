@@ -6,31 +6,17 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/21 13:49:48 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/21 14:24:16 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	print_heredoc_syntax_error(t_token *next)
-{
-	if (next)
-	{
-		ft_putstr_fd("minishell: syntax error near unexpected token '", 2);
-		ft_putstr_fd(next->str, 2);
-		ft_putstr_fd("'\n", 2);
-	}
-	else
-		ft_putstr_fd("minishell: syntax error unexpected token'newline'\n", 2);
-}
-
-char	*get_heredoc_delimiter(t_token *current)
+static char	*join_heredoc_words(t_token *word)
 {
 	char	*result;
 	char	*tmp;
-	t_token	*word;
 
-	word = current->next;
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
@@ -47,6 +33,21 @@ char	*get_heredoc_delimiter(t_token *current)
 			break ;
 	}
 	return (result);
+}
+
+char	*get_heredoc_delimiter(t_token *current)
+{
+	char	*result;
+	char	*clean;
+
+	result = join_heredoc_words(current->next);
+	if (!result)
+		return (NULL);
+	clean = remove_quote(result);
+	free(result);
+	if (!clean)
+		return (NULL);
+	return (clean);
 }
 
 void	heredoc_sigint(int sig)
@@ -79,7 +80,10 @@ int	process_heredoc(t_token *tokens, t_cleanup *cleanup)
 		{
 			if (!current->next || current->next->type != TOKEN_WORD)
 			{
-				print_heredoc_syntax_error(current->next);
+				if (current->next)
+					print_syntax_error(current->next->str);
+				else
+					print_unexpected_token();
 				return (-1);
 			}
 			if (handle_single_heredoc(current, cleanup) == -1)

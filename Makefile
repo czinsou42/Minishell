@@ -6,7 +6,7 @@
 #    By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2026/03/21 13:34:16 by lebertau         ###   ########.fr        #
+#    Updated: 2026/03/21 14:22:29 by lebertau         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,6 +58,7 @@ BUILTINS_SRCS = srcs/builtins/builtins_cd.c \
 
 HEREDOC_SRCS = srcs/heredoc/heredoc.c \
 			   srcs/heredoc/handle_single_heredoc.c \
+			   srcs/heredoc/heredoc_expand.c \
 
 MAIN_SRCS = srcs/main_utils.c \
 
