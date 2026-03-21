@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 17:49:44 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/19 13:25:41 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/21 13:41:49 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	handle_empty_line(char *line)
 	if (line == NULL)
 	{
 		printf("exit\n");
-		clear_history();
+		rl_clear_history();
 		return (1);
 	}
 	if (line[0] == '\0')
