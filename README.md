@@ -1,14 +1,44 @@
+*This project has been created as part of the 42 curriculum by czinsou, lebertau*
 # MINISHELL
 
-## Architecture du projet
+## Description
+Minishell is a project all about **creating your very own shell**. Taking bash's behavior as a baseline, it must reproduce several of its commands (in this project, refered to as "built-ins"), handle redirections and pipes, and overall be usable as any other shell would be.  
 
-**Le code est modulable**
+This project is the common's core biggest so far, and as such, it is important for the code to be readable, modulable, debuggable, and as clean as it can be.
 
-Chaque dossier correspond à une séquances du minishell, on peut donc parler de programmation modulaire. Ce choix est fait pour avoir une meilleure lisibilité de mon code et surtout une meilleure scalabilité, une feature peut être implémenté et testé sans problème.
+## Instructions
+**Compilation**: 
+```bash
+make
+```
+**Execution** : 
+```bash
+./minishell
+```
 
-Pour rajouter un module, il suffit de créer un nouveau dossier, une fois le code terminé, on rajoute les sources du module à une règle du makefile spécifique au module et sans oublier de rajouter le tout à la règle principale une fois la feature opérationnelle.
+**Checking memory leaks** (readline.supp is not bundled with the project):
+```bash
+valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --track-origins=yes --trace-children=yes --trace-children-skip='/bin/*,/usr/bin/*,/usr/local/bin/*' --suppressions=readline.supp -s ./minishell
+```
 
-*Exemple:*
+## Resources
+[Bash reference manual](https://www.gnu.org/software/bash/manual/bash.html)  
+[Writing Your Own Shell](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)  
+[LucasKuhn minishell-tester](https://github.com/LucasKuhn/minishell_tester)
+
+AI tools were mainly used for restructuring of human-written code, as to follow **The Norm**.  
+AI tools were used to generate test cases.  
+AI tools were used for guidance on how to debug code.
+
+## Technical choices
+
+**The code is modular**
+
+Each folder maps to one stage of the minishell pipeline. This modular layout improves readability and makes features easier to implement, test, and maintain independently.
+
+To add a module, create a new folder and source list in the `Makefile`, then include it in the global `SRCS` rule once the feature is ready.
+
+*Example:*
 ```makefile
 TEST_FEATURE = test_feature
 
@@ -24,56 +54,59 @@ TEST_FEATURE_SRCS = srcs/feature/feature_test.c $(FEATURE_SRCS)
 TEST_FEATURE_OBJS = $(TEST_FEATURE_SRCS:.c=.o)
 ```
 
-**Contenu des dossiers**
+**Folder convention**
 
-Chaque dossier comporter un fichier .c du même nom que le dossier, c'est ce fichier qui contient la fonction princpale et donc la logique principal du module, tout le reste sont des fichiers utils.
+Each module usually contains a main `.c` file named after the folder, which holds the core logic. The remaining files are utility/helpers for that module.
 
 
-## Flow du minishell
+## Minishell flow
 
 ### 1. Lexer
 
-Dans ce module, le but est de transformer la ligne du récupérée grâce à la fonction readline et dans le transofmer en une liste chaînée de "tokens".
+This module reads the line from `readline()` and converts it into a linked list of tokens.
 
-Un exemple vaut mieux que 1000 mots:
+Example:
 
 **echo hello | cat -e** → **[WORD "echo"] → [WORD "hello"] → [PIPE "|"] → [WORD "cat"] → [WORD "-e"] → NULL**
 
-Cette fonction a pour but de déterminer à quoi correspond une chaine de caractère, cela est nécessaire car nous devons appliquer des règles de grammaire à notre minishell, il faut donc commencer par défénir les fondations de notre langage. On peut faire une analogie à une langue vivante, pour construire une phrase qui a du sens on a besoin d'un sujet, verbe et complément, pour le shell c'est la même chose !
+Tokenization defines the basic grammar elements the shell relies on before parsing.
 
-Il y a un point important à souligner ici, il faut prendre en compte le type de quotes car le comportement de l'expand **(3)** n'est pas le même selon le type de quotes.
+Quote type is tracked here because expansion behavior (step 3) depends on it.
 
-Dans le .h il est possible de retrouver les enum ainsi que les structures utilisé pour tokenizer correctement, tout est correctement commenté il est facile de s'y retrouver.
+Enums and data structures used for tokenization are defined in the header files.
 
 ### 2. Heredoc
 
-Dans ce module on s'occupe du cas où l'on tombe sur un token de type `TOKEN_REDIR_HEREDOC`. Le but ici et d'afficher un prompt tant que l'utilisateur n'a pas taper l'EOF qui correspond à la string juste après le `<<`. Il est crucial de le faire à ce moment là car il faut prendre en compte les variables à expand. On stock donc au fur et à mesure que l'utilisateur écrit et une fois que l'utilisateur écris exactement la même chose que le délimiteur, on s'arrête et un passe au heredoc suivant s'il y en a un.
+This module handles `TOKEN_REDIR_HEREDOC`.
+It keeps prompting until the user enters the delimiter (`<< delimiter`).
+Input is buffered as it is read, then processing moves to the next heredoc when the delimiter is reached.
 
 ### 3. Expand
 
-Commençons par défninir qu'est ce qu'un expand, dans notre environnement système il y a plusieurs variables qu'on peut retrouver grâve à la commande env ou la varaible `char **envp`. Il y a des cas où l'on doit lire littéralement la variable et d'autre où l'on doit la remplacer par son contenu, c'est le rôle du module. Prendre la décision ou non d'expand lui revient, tout en prennons en compte le contenu du **Heredoc** s'il y a des variables à expand.
+This module decides when environment variables should be expanded and when text should stay literal.
+It uses shell rules (including quote context) and also handles expansion behavior inside heredoc content when required.
 
 ### 4. Parser
 
-Ce module est crucial pour le bon fonctionnement du minishell, commençons tout d'abord par définir qu'est ce qu'un parsing. C'est un outil qui analyse la structure d'une liste et la transforme en une structure de commande, reprennons l'analogie à une langue vivante si on a **"Le chat mange un coeur de mangue"**, ici le parser comprend Sujet: "Le chat" Verbe: "mange" Complément: "un coeur de mangue". C'est la même chose pour minishell !
+The parser transforms the token list into executable command structures.
 
-**Exemple:**
+**Example:**
 
 Tokens : [WORD "cat"] [REDIR_IN "<"] [WORD "file"]
 		↓ (PARSER)
 Structure :
-Commande : "cat"
-Arguments : (aucun)
+Command : "cat"
+Arguments : (none)
 Redirections : 
   - Input : "file"
 
-Une commande est une unité d'exécution qui contient le nom de la commandes, ses arguments et ses redirection s'il y en a.
+A command unit contains the command name, its arguments, and optional redirections.
 
-**Exemple**
+**Example**
 
 Input : "grep test < file > output"
 ```
-Commande {
+Command {
 	cmd_name: "grep"
 	args: ["test"]
 	redirections: [
@@ -83,21 +116,21 @@ Commande {
 }
 ```
 
-C'est dans cette partie qu'entre la notion d'opérateurs logique et de construction d'ast. En effet, s'il on tombe sur un token de type && ou || ou | on doit construire un ast.
+This is also where logical operators and AST construction are handled (`&&`, `||`, `|`).
 
 #### AST (Abstract Syntax Tree)
 
-Un AST ou arbre syntaxique abstrait est une représentation hiérarchique de la structure logique d'une commande. Plutôt que de garder une liste linéaire de tokens, on organise les commandes et opérateurs dans une structure d'arbre qui respecte les priorités d'exécution.
+An AST is a hierarchical representation of command logic. Instead of keeping a flat token list, commands and operators are organized by execution priority.
 
-**Pourquoi construire un AST ?**
+**Why build an AST?**
 
-Imaginons la commande : `ls | cat && echo done`
+Consider the command: `ls | cat && echo done`
 
-Sans AST, on aurait du mal à savoir dans quel ordre exécuter les choses. L'AST nous permet de représenter clairement que :
-- Le pipe (|) doit s'éxecuter en premier (priorité haute)
-- Le AND (&&) s'éxecute après, selon le résultat du pipe (priorité basse)
+It makes execution order explicit:
+- `|` is evaluated first (higher priority)
+- `&&` is evaluated after (lower priority), based on previous exit status
 
-**Représentation de l'arbre :**
+**Tree representation:**
 ```
         AND
        /   \
@@ -106,91 +139,66 @@ Sans AST, on aurait du mal à savoir dans quel ordre exécuter les choses. L'AST
   ls  cat  echo
 ```
 
-**Comment on construit l'AST ?**
+**How the AST is built**
 
-Le parser recherche les opérateurs dans un ordre précis :
-1. D'abord les opérateurs de **basse priorité** (||, &&)
-2. Ensuite les opérateurs de **haute priorité** (|)
-3. Finalement les **commandes simples**
+The parser searches operators in this order:
+1. **Low priority** operators (`||`, `&&`)
+2. **High priority** operator (`|`)
+3. **Simple commands**
 
-Quand on trouve un opérateur, on crée un noeud pour cet opérateur et on construit récursivement les sous-arbres gauche et droit. Cette approche récursive garantit que les opérateurs de basse priorité se retrouvent en haut de l'arbre (racine) et seront donc éxecutés en dernier.
+When an operator is found, a node is created and left/right subtrees are built recursively. This keeps low-priority operators near the root (executed later).
 
-**Exemple de construction :**
+**Build example:**
 
 Input : "ls | cat && echo done"
 
-1. On cherche && → Trouvé ! On crée un noeud AND
-2. Partie gauche "ls | cat" → On cherche récursivement
-   - On trouve | → On crée un noeud PIPE avec ls à gauche et cat à droite
-3. Partie droite "echo done" → C'est une commande simple, on crée un noeud COMMAND
+1. Search for `&&` → create an `AND` node
+2. Parse left side `ls | cat` recursively → create a `PIPE` node
+3. Parse right side `echo done` → create a `COMMAND` node
 
-**Les redirections**
+**Redirections**
 
-Les redirections sont gérées au niveau des commandes individuelles. Quand on parse une commande, on identifie tous les opérateurs de redirection (<, >, >>, <<) et on construit une liste chaînée de redirections attachée à la commande. Cette liste sera parcourue lors de l'exécution pour appliquer chaque redirection avant de lancer la commande.
+Redirections are attached to each command while parsing (`<`, `>`, `>>`, `<<`).
+During execution, this redirection list is applied before launching the command.
 
 ### 5. Exec
 
-Le module d'exécution est le coeur du minishell, c'est ici qu'on donne vie à l'AST qu'on a construit. L'éxecution se fait par un parcours en profondeur de l'arbre, ce qui signifie qu'on éxecute d'abord les feuilles (commandes) avant de remonter vers la racine (opérateurs).
+The execution module is where the AST is evaluated.
+It performs a depth-first traversal: command leaves first, operators afterward.
 
-**Principe général**
+**General behavior**
 
-On parcourt l'arbre récursivement selon le type de noeud :
-- **NODE_COMMAND** : On crée un processus enfant avec `fork()`, on applique les redirections, puis on exécute la commande avec `execve()`
-- **NODE_AND** : On éxecute le fils gauche, et seulement si il réussit (code retour = 0), on éxecute le fils droit
-- **NODE_OR** : On éxecute le fils gauche, et seulement si il échoue (code retour ≠ 0), on éxecute le fils droit
-- **NODE_PIPE** : On crée un pipe, lance les deux commandes en parallèle en connectant leur sortie/entrée
+The tree is evaluated recursively by node type:
+- **NODE_COMMAND**: `fork()`, apply redirections, then `execve()`
+- **NODE_AND**: execute right child only if left exits with status `0`
+- **NODE_OR**: execute right child only if left exits with non-zero status
+- **NODE_PIPE**: create a pipe and connect stdout/stdin across both commands
 
-**Le cas des heredocs**
+**Heredoc execution**
 
-Pour les heredocs, on a déjà lu et stocké le contenu pendant la phase 2. Lors de l'éxecution, dans `apply_heredoc()`, on crée un pipe, on écrit le contenu dans le pipe, et on redirige l'entrée standard vers ce pipe. C'est exactement comme si le contenu venait d'un fichier, sauf qu'il est en mémoire.
+Heredoc content is collected in phase 2.
+During execution, `apply_heredoc()` writes that content into a pipe and redirects stdin to it (file-like behavior, in memory).
 
-**Gestion mémoire critique**
+**Memory management**
 
-Un point crucial de l'éxecution concerne la gestion mémoire. Quand on fait `fork()`, le processus enfant hérite de toutes les structures allouées (tokens, AST, line). Si ce processus termine avec `exit()` sans libérer ces structures, elles apparaissent comme des leaks dans Valgrind.
+After `fork()`, child processes inherit allocated structures (line, tokens, AST).
+To avoid Valgrind leaks, a shared `t_cleanup` context is passed around and freed in children before each `exit()`.
 
-La solution : on propage une structure **t_cleanup** qui contient les pointeurs vers toutes les allocations principales. Dans le processus enfant, avant chaque `exit()`, on libère explicitement :
-- La ligne readline
-- La liste de tokens
-- L'arbre syntaxique complet
+## Implemented features
 
-Cette approche garantit 0 bytes de leaks, même dans les processus enfants qui terminent après un échec d'execve.
-
-## Fonctionnalités implémentées
-
-- **Lexer** : Tokenisation avec gestion des quotes et opérateurs
-- **Heredocs** : Lecture interactive, expansion, exécution par pipe
-- **Expander** : Remplacement des variables d'environnement
-- **Parser** : Construction d'AST pour commandes simples, AND, OR
-- **Exécution** : fork/execve avec gestion des codes de retour
-- **Redirections** : <, >, >> fonctionnels
-- **Gestion mémoire** : 0 leaks Valgrind (definitely lost ET still reachable)
-- **Pipes** : Structure définie, et éxecution implémenter
+- **Lexer** : Tokenization with quote and operator handling
+- **Heredocs** : Interactive input, expansion, and pipe-based execution
+- **Expander** : Environment variable substitution
+- **Parser** : AST construction for simple commands, AND, OR
+- **Execution** : `fork`/`execve` with proper exit status handling
+- **Redirections** : `<`, `>`, `>>` supported
+- **Memory management** : 0 Valgrind leaks (`definitely lost` and `still reachable`)
+- **Pipes** : Structure defined and execution implemented
 - **Builtins** : echo, cd, pwd, export, unset, env, exit
-- **Signaux** : Ctrl+C, Ctrl+D, Ctrl+\
-- **Variable $?** : Code de retour de la dernière commande
+- **Signals** : Ctrl+C, Ctrl+D, Ctrl+\
+- **`$?` variable** : Exit status of the last command
 
 
-## Fonctionnalités non implémentées
+## Not implemented
 
-- **Wildcards** : Expansion de *
-
-## Compilation et utilisation
-
-Pour compiler le projet :
-```bash
-make
-```
-
-Pour lancer le minishell :
-```bash
-./minishell
-```
-
-Pour tester avec Valgrind (vérification des leaks) :
-```bash
-valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --track-origins=yes --trace-children=yes --trace-children-skip='/bin/*,/usr/bin/*,/usr/local/bin/*' --suppressions=readline.supp -s ./minishell
-```
-
-## Auteurs
-
-Projet réalisé par **czinsou et  lebertau** dans le cadre du cursus 42.
+- **Wildcards** : `*` expansion
