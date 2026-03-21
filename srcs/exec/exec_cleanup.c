@@ -6,7 +6,7 @@
 /*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 15:37:06 by czinsou           #+#    #+#             */
-/*   Updated: 2026/03/21 13:40:48 by czinsou          ###   ########.fr       */
+/*   Updated: 2026/03/21 13:51:27 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,4 @@ void	cleanup_and_exit(t_cleanup *cleanup, int status)
 	free_envp(cleanup->envp);
 	rl_clear_history();
 	exit(status);
-}
-
-void	cleanup_iteration(t_cleanup *cleanup)
-{
-	if (cleanup->tokens)
-		free_tokens(cleanup->tokens);
-	if (cleanup->ast)
-		free_ast(cleanup->ast);
-	cleanup->tokens = NULL;
-	cleanup->ast = NULL;
 }
