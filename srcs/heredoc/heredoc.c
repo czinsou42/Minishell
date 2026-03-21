@@ -6,11 +6,23 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 14:54:14 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 15:53:03 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/21 13:49:48 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	print_heredoc_syntax_error(t_token *next)
+{
+	if (next)
+	{
+		ft_putstr_fd("minishell: syntax error near unexpected token '", 2);
+		ft_putstr_fd(next->str, 2);
+		ft_putstr_fd("'\n", 2);
+	}
+	else
+		ft_putstr_fd("minishell: syntax error unexpected token'newline'\n", 2);
+}
 
 char	*get_heredoc_delimiter(t_token *current)
 {
@@ -67,13 +79,7 @@ int	process_heredoc(t_token *tokens, t_cleanup *cleanup)
 		{
 			if (!current->next || current->next->type != TOKEN_WORD)
 			{
-				if (current->next)
-					fprintf(stderr,
-						"minishell: syntax error near unexpected token '%s'\n",
-						current->next->str);
-				else
-					fprintf(stderr,
-						"minishell: syntax error unexpected token'newline'\n");
+				print_heredoc_syntax_error(current->next);
 				return (-1);
 			}
 			if (handle_single_heredoc(current, cleanup) == -1)
