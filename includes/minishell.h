@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 17:50:03 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/21 14:22:29 by lebertau         ###   ########.fr       */
+/*   Created: 2025/10/02 17:50:03 by czinsou           #+#    #+#             */
+/*   Updated: 2026/03/21 14:45:27 by czinsou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,6 @@ void					setup_child_pipe(int prev_fd, int *pipefd,
 int						handle_single_heredoc(t_token *token,
 							t_cleanup *cleanup);
 void					init_cleanup(t_cleanup *cleanup);
-void					cleanup_iteration(t_cleanup *cleanup);
 char					*read_full_line(void);
 int						has_unclosed_quote(char *line);
 void					apply_clean(t_token *tokens);
