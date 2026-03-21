@@ -6,7 +6,7 @@
 /*   By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:28:47 by amwahab           #+#    #+#             */
-/*   Updated: 2026/03/20 15:50:44 by lebertau         ###   ########.fr       */
+/*   Updated: 2026/03/21 13:34:10 by lebertau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ static void	expand_token(t_expand_tokens *expand_tokens, t_token *tokens)
 	tokens->str = expanded_str;
 	if (tokens->quote == NO_QUOTE)
 		split_token_on_spaces(tokens);
-	if (tokens->quote == NO_QUOTE && ft_strchr(tokens->str, '*'))
-		expand_wildcard_token(tokens);
 	apply_clean(tokens);
 }
 

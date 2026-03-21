@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: czinsou <czinsou@student.42.fr>            +#+  +:+       +#+         #
+#    By: lebertau <lebertau@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/12 11:54:28 by amwahab           #+#    #+#              #
-#    Updated: 2026/03/20 15:57:29 by czinsou          ###   ########.fr        #
+#    Updated: 2026/03/21 13:34:16 by lebertau         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,6 @@ PARSER_SRCS = srcs/parser/parser.c \
 EXPAND_SRCS = srcs/expander/expand.c \
 			srcs/expander/expand_utils.c \
 			srcs/expander/expand_utils2.c \
-			srcs/expander/expand_wildcard.c \
 
 EXEC_SRCS = srcs/exec/exec_and.c \
 			srcs/exec/exec_command.c \
